@@ -10,6 +10,7 @@ from setting_libs.setting_helper import SettingHelper
 
 def initialize_settings():
     """Initialize settings with default values if they do not exist"""
+
     default_settings = {
         "noita_saves_dir_path": "/mnt/c/Users/user/AppData/LocalLow/Nolla_Games_Noita",
         "backup_dir_path": "./data/backups",
@@ -17,7 +18,8 @@ def initialize_settings():
     }
 
     for key, value in default_settings.items():
-        if SettingHelper.get_setting(key) is None:
+        setting: str = SettingHelper.get_setting(key)
+        if setting is None or setting == "":
             SettingHelper.save_setting(key, value)
 
 
@@ -70,7 +72,7 @@ def expose_bridge_functions():
     eel.expose(get_all_settings)
 
 
-if __name__ == "__main__":
+def load_env():
     # Load .env from project root during development or from the
     # PyInstaller temporary folder when frozen (sys._MEIPASS).
     # This ensures bundled apps can include a .env via --add-data.
@@ -85,6 +87,10 @@ if __name__ == "__main__":
     else:
         # normal development
         load_dotenv()
+
+
+if __name__ == "__main__":
+    load_env()
     initialize_settings()
 
     noita_saves_dir_path: str = SettingHelper.get_setting("noita_saves_dir_path")

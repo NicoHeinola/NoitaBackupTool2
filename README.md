@@ -58,7 +58,3 @@ pyinstaller --onedir --windowed --name NoitaBackupTool2 \
   --add-data "ui/frontend/dist:ui/frontend/dist" \
   main.py
 ```
-
-Result: `dist/NoitaBackupTool2/` contains the `.exe` and required files — copy that folder to Windows to test.
-
-The application will load `.env` automatically both during development and when bundled by PyInstaller (the app checks PyInstaller's runtime folder and falls back to the project directory). Ensure `python-dotenv` is listed in `requirements.txt` if you use `.env`.

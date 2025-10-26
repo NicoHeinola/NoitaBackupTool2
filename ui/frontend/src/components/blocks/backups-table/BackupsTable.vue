@@ -28,6 +28,8 @@ const openSnackbar = useSnackbar();
 const openDialog = useDialog();
 const openConfirm = useConfirm();
 
+const loadingBackup = ref(false);
+
 const getBackups = async () => {
   try {
     backups.value = await BackupService.getBackups();
@@ -43,7 +45,7 @@ const getBackups = async () => {
   }
 };
 
-const handleEditBackup = async (backup: Backup) => {
+const handleEditBackup = async (backup?: Backup) => {
   const result = await openDialog({
     component: EditBackupsDialog,
     props: {
@@ -54,6 +56,9 @@ const handleEditBackup = async (backup: Backup) => {
   if (result) {
     await getBackups();
   }
+
+  // Return whether the dialog resulted in a saved backup (true) or was cancelled (false/undefined)
+  return result;
 };
 
 const handleDeleteBackup = async (backup: Backup) => {
@@ -81,6 +86,65 @@ const handleDeleteBackup = async (backup: Backup) => {
   }
 };
 
+const handleLoadBackup = async (backup: Backup) => {
+  // Ask whether user wants to backup current save first.
+  const confirmed = await openConfirm({
+    props: {
+      title: "Backup current save?",
+      text: `Create a backup of the current save before loading "${backup.name}"? Click OK to add a backup first, or Cancel to skip and load immediately.`,
+      cancelText: "Load Without Backup",
+      confirmText: "Backup Current Save",
+    },
+  });
+
+  try {
+    if (confirmed) {
+      // Reuse existing edit/create handler (no backup arg => create new)
+      const created = await handleEditBackup();
+
+      if (!created) {
+        // User chose not to create backup after all - abort loading.
+        return;
+      }
+    } else {
+      // Make extra sure if user doesn't want to create a backup
+      const proceed = await openConfirm({
+        props: {
+          title: "Load without backup?",
+          text: `Are you sure you want to load "${backup.name}" without creating a backup of the current save? This action cannot be undone.`,
+        },
+      });
+
+      if (!proceed) {
+        // User chose not to proceed - abort loading.
+        return;
+      }
+    }
+
+    // Load the selected backup
+    await BackupService.loadBackup(backup.id!);
+
+    openSnackbar({
+      props: {
+        text: "Backup '" + backup.name + "' loaded successfully.",
+        color: "success",
+      },
+    });
+  } catch (error) {
+    console.error("Error loading backup:", error);
+    errorSnackbar(openSnackbar, "Failed to load backup.", true);
+  }
+};
+
+const handleLoadBackupWithLoadingState = async (backup: Backup) => {
+  loadingBackup.value = true;
+  try {
+    await handleLoadBackup(backup);
+  } finally {
+    loadingBackup.value = false;
+  }
+};
+
 onMounted(getBackups);
 
 defineExpose({
@@ -92,6 +156,13 @@ defineExpose({
   <v-data-table multi-sort :headers="headers" :items="backups">
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
+        <v-btn
+          size="x-small"
+          icon="mdi-backup-restore"
+          :title="'Load ' + item.name"
+          :loading="loadingBackup"
+          @click="handleLoadBackupWithLoadingState(item)"
+        ></v-btn>
         <v-btn
           size="x-small"
           icon="mdi-pencil"

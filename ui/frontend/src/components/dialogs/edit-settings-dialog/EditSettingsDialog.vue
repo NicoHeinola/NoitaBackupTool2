@@ -27,7 +27,7 @@ const getSettings = async () => {
         });
     } catch (error) {
         console.error("Error fetching settings:", error);
-        //  errorSnackbar(openSnackbar, "Failed to load settings.", true);
+        errorSnackbar(openSnackbar, "Failed to load settings.", true);
     }
 };
 

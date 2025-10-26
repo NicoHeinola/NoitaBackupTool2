@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 import eel
 from dotenv import load_dotenv
 import bridge
@@ -69,7 +71,20 @@ def expose_bridge_functions():
 
 
 if __name__ == "__main__":
-    load_dotenv()
+    # Load .env from project root during development or from the
+    # PyInstaller temporary folder when frozen (sys._MEIPASS).
+    # This ensures bundled apps can include a .env via --add-data.
+    if getattr(sys, "frozen", False):
+        # avoid direct attribute access (Pylance warns for sys._MEIPASS)
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            base_path = Path(meipass)
+            env_path = base_path / ".env"
+            if env_path.exists():
+                load_dotenv(dotenv_path=str(env_path))
+    else:
+        # normal development
+        load_dotenv()
     initialize_settings()
 
     noita_saves_dir_path: str = SettingHelper.get_setting("noita_saves_dir_path")

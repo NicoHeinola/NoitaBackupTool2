@@ -8,6 +8,7 @@ greenlet==3.2.4
 importlib_resources==6.5.2
 pillow==11.3.0
 pyparsing==3.2.5
+python-dotenv==1.1.1
 setuptools==80.9.0
 typing_extensions==4.15.0
 zope.event==6.0

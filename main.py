@@ -56,11 +56,15 @@ def expose_bridge_functions():
     def save_setting(key, value):
         return bridge.save_setting(key, value)
 
+    def save_settings(settings_data):
+        return bridge.save_settings(settings_data)
+
     def get_all_settings():
         return bridge.get_all_settings()
 
     eel.expose(get_setting)
     eel.expose(save_setting)
+    eel.expose(save_settings)
     eel.expose(get_all_settings)
 
 

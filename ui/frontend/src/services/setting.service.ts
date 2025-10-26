@@ -10,4 +10,8 @@ export const SettingService = {
   saveSetting: async (key: string, value: any) => {
     return (window as any).eel.save_setting?.(key, value)?.();
   },
+
+  saveSettings: async (settings: Record<string, any>) => {
+    return (window as any).eel.save_settings?.(settings)?.();
+  },
 };

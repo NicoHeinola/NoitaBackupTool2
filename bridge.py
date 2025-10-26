@@ -47,6 +47,11 @@ def save_setting(key: str, value: Any) -> None:
     SettingHelper.save_setting(key, value)
 
 
+def save_settings(settings_data: dict) -> None:
+    """Save all settings from a dict."""
+    SettingHelper.save_settings(settings_data)
+
+
 def get_all_settings() -> dict:
     """Return all settings as a dict."""
     return SettingHelper.load_settings()

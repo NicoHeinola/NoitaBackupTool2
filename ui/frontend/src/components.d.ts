@@ -15,6 +15,7 @@ declare module 'vue' {
     ConfirmDialog: typeof import('./components/dialogs/use-dialog/confirm/ConfirmDialog.vue')['default']
     DialogProvider: typeof import('./components/dialogs/use-dialog/DialogProvider.vue')['default']
     EditSettingsDialog: typeof import('./components/dialogs/edit-settings-dialog/EditSettingsDialog.vue')['default']
+    EditSettingsForm: typeof import('./components/forms/edit-settings-form/EditSettingsForm.vue')['default']
     FloatingButton: typeof import('./components/blocks/floating-button/FloatingButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

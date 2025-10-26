@@ -30,7 +30,7 @@ def start_app():
     eel.init(os.path.join(os.path.dirname(__file__), "ui", "frontend", "dist"))
 
     eel.start(
-        "/",
+        "",
         mode="browser",
         port=port,
     )

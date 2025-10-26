@@ -166,6 +166,7 @@ defineExpose({
             <v-btn
               size="x-small"
               icon="mdi-dots-vertical"
+              variant="outlined"
               v-bind="props"
             ></v-btn>
           </template>

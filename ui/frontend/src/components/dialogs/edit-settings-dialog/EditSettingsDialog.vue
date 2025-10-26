@@ -41,11 +41,10 @@ const save = async () => {
         color: "success",
       },
     });
+    emit("resolve", true);
   } catch (error) {
     console.error("Error saving settings:", error);
     errorSnackbar(openSnackbar, "Failed to save settings.", true);
-  } finally {
-    emit("resolve", true);
   }
 };
 

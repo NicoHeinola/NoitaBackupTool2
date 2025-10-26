@@ -14,6 +14,8 @@ declare module 'vue' {
     BackupsTable: typeof import('./components/blocks/backups-table/BackupsTable.vue')['default']
     ConfirmDialog: typeof import('./components/dialogs/use-dialog/confirm/ConfirmDialog.vue')['default']
     DialogProvider: typeof import('./components/dialogs/use-dialog/DialogProvider.vue')['default']
+    EditBackupsDialog: typeof import('./components/dialogs/edit-backups-dialog/EditBackupsDialog.vue')['default']
+    EditBackupsForm: typeof import('./components/forms/edit-backups-form/EditBackupsForm.vue')['default']
     EditSettingsDialog: typeof import('./components/dialogs/edit-settings-dialog/EditSettingsDialog.vue')['default']
     EditSettingsForm: typeof import('./components/forms/edit-settings-form/EditSettingsForm.vue')['default']
     FloatingButton: typeof import('./components/blocks/floating-button/FloatingButton.vue')['default']

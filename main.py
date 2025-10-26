@@ -31,10 +31,37 @@ def start_app():
 def expose_bridge_functions():
     """Expose bridge functions to the frontend through Eel"""
 
+    # Backups
     def get_backups():
         return bridge.get_backups(noita_backup_helper)
 
+    def save_backup(backup_data):
+        return bridge.save_backup(noita_backup_helper, backup_data)
+
+    def delete_backup(backup_id):
+        return bridge.delete_backup(noita_backup_helper, backup_id)
+
+    def load_backup(backup_id):
+        return bridge.load_backup(noita_backup_helper, backup_id)
+
     eel.expose(get_backups)
+    eel.expose(save_backup)
+    eel.expose(delete_backup)
+    eel.expose(load_backup)
+
+    # Settings
+    def get_setting(key, default_value=""):
+        return bridge.get_setting(key, default_value)
+
+    def save_setting(key, value):
+        return bridge.save_setting(key, value)
+
+    def get_all_settings():
+        return bridge.get_all_settings()
+
+    eel.expose(get_setting)
+    eel.expose(save_setting)
+    eel.expose(get_all_settings)
 
 
 if __name__ == "__main__":

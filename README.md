@@ -56,7 +56,6 @@ pyinstaller --onedir --windowed --name NoitaBackupTool2 \
   --icon assets/icon.ico \
   --add-data ".env:." \
   --add-data "ui/frontend/dist:ui/frontend/dist" \
-  --add-data "data:data" \
   main.py
 ```
 

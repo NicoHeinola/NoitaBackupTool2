@@ -29,7 +29,11 @@ def start_app():
 
     eel.init(os.path.join(os.path.dirname(__file__), "ui", "frontend", "dist"))
 
-    eel.start("index.html", mode="browser", port=port)
+    eel.start(
+        "/",
+        mode="browser",
+        port=port,
+    )
 
 
 def expose_bridge_functions():

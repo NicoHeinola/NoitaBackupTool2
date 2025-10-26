@@ -52,19 +52,15 @@ pip install pyinstaller
 2. Run PyInstaller (use `:` as `--add-data` separator on Unix)
 
 ```bash
+# --- Ubuntu
+
 pyinstaller --onedir --windowed --name NoitaBackupTool2 \
   --icon assets/icon.ico \
   --add-data ".env:." \
   --add-data "ui/frontend/dist:ui/frontend/dist" \
   main.py
 
-# --- Bash version below
+# --- Windows
 
-pyinstaller --onedir --windowed --name NoitaBackupTool2 ^
-  --icon assets\icon.ico ^
-  --add-data ".env;." ^
-  --add-data "ui/frontend/dist;ui/frontend/dist" ^
-  main.py
+pyinstaller --onedir --windowed --name NoitaBackupTool2 --icon assets\icon.ico --add-data ".env;." --add-data "ui/frontend/dist;ui/frontend/dist" main.py
 ```
-
-PowerShell tip: use the backtick (`) for line continuation if you prefer PowerShell.

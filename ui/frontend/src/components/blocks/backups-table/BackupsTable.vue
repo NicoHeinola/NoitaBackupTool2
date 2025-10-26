@@ -89,7 +89,7 @@ defineExpose({
 </script>
 
 <template>
-  <v-data-table :headers="headers" :items="backups">
+  <v-data-table multi-sort :headers="headers" :items="backups">
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-btn

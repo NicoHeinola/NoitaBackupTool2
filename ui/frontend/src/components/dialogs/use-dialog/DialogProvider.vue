@@ -21,7 +21,7 @@ const openDialog = ({ component, props }: any) => {
       component: markRaw(component), // markRaw to avoid making component reactive
       props: props || {},
       isOpen: true,
-      resolve
+      resolve,
     };
 
     dialogs.value.push(dialogItem);
@@ -29,7 +29,7 @@ const openDialog = ({ component, props }: any) => {
 };
 
 const handleClose = (id: string) => {
-  const index = dialogs.value.findIndex(d => d.id === id);
+  const index = dialogs.value.findIndex((d) => d.id === id);
   if (index !== -1) {
     const dialog = dialogs.value[index];
     if (dialog) {
@@ -38,7 +38,7 @@ const handleClose = (id: string) => {
       dialog.resolve(null);
       // Remove after a short delay to allow animation
       setTimeout(() => {
-        const currentIndex = dialogs.value.findIndex(d => d.id === id);
+        const currentIndex = dialogs.value.findIndex((d) => d.id === id);
         if (currentIndex !== -1) {
           dialogs.value.splice(currentIndex, 1);
         }
@@ -48,7 +48,7 @@ const handleClose = (id: string) => {
 };
 
 const handleResolve = (id: string, payload: any) => {
-  const index = dialogs.value.findIndex(d => d.id === id);
+  const index = dialogs.value.findIndex((d) => d.id === id);
   if (index !== -1) {
     const dialog = dialogs.value[index];
     if (dialog) {
@@ -57,7 +57,7 @@ const handleResolve = (id: string, payload: any) => {
       dialog.resolve(payload);
       // Remove after a short delay to allow animation
       setTimeout(() => {
-        const currentIndex = dialogs.value.findIndex(d => d.id === id);
+        const currentIndex = dialogs.value.findIndex((d) => d.id === id);
         if (currentIndex !== -1) {
           dialogs.value.splice(currentIndex, 1);
         }
@@ -71,9 +71,19 @@ provide("openDialog", openDialog);
 
 <template>
   <slot></slot>
-  <v-dialog v-for="dialog in dialogs" :key="dialog.id" v-model="dialog.isOpen" :z-index="2000 + dialogs.indexOf(dialog)"
-    @update:model-value="(value) => !value && handleClose(dialog.id)">
-    <component :is="dialog.component" v-bind="dialog.props" @close="() => handleClose(dialog.id)"
-      @resolve="(payload: any) => handleResolve(dialog.id, payload)" />
+  <v-dialog
+    v-for="dialog in dialogs"
+    :key="dialog.id"
+    v-model="dialog.isOpen"
+    :z-index="2000 + dialogs.indexOf(dialog)"
+    @update:model-value="(value) => !value && handleClose(dialog.id)"
+    persistent
+  >
+    <component
+      :is="dialog.component"
+      v-bind="dialog.props"
+      @close="() => handleClose(dialog.id)"
+      @resolve="(payload: any) => handleResolve(dialog.id, payload)"
+    />
   </v-dialog>
 </template>

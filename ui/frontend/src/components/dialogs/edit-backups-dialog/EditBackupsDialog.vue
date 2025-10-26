@@ -32,12 +32,6 @@ const loading = ref(false);
 const isEditMode = computed(() => !!props.backup?.id);
 
 const save = async () => {
-  // Validate required fields
-  if (!backupData.value.name?.trim()) {
-    errorSnackbar(openSnackbar, "Backup name is required.", false);
-    return;
-  }
-
   loading.value = true;
   try {
     await BackupService.saveBackup(backupData.value);

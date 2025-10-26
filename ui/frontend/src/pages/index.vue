@@ -27,5 +27,5 @@ const openEditSettingsDialog = async () => {
       </v-col>
     </v-row>
   </v-container>
-  <floating-button @click="() => openEditSettingsDialog()" color="secondary" icon="mdi-cog" />
+  <floating-button @click.stop="() => openEditSettingsDialog()" color="secondary" icon="mdi-cog" />
 </template>

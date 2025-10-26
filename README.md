@@ -25,7 +25,6 @@ pip install -r requirements.txt
 cd ui/frontend
 npm install
 npm run build
-cd -
 ```
 
 4. Create `.env` file based on `.env.example`

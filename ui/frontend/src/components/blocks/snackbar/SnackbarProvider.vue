@@ -59,7 +59,7 @@ provide("openSnackbar", openSnackbar);
 <template>
   <slot></slot>
   <v-snackbar v-for="(snackbar, index) in snackbars" :key="snackbar.id" v-model="snackbar.isOpen"
-    v-bind="snackbar.props" :timeout="-1" :style="{ 'margin-bottom': `${index * 70}px` }">
+    v-bind="snackbar.props" :timeout="-1" :style="{ 'margin-bottom': `${index * 70 + 16}px` }">
     <template #actions>
       <v-btn :color="snackbar.props.actionColor || 'white'" text @click="handleClose(snackbar.id)">
         {{ snackbar.props.actionText || 'OK' }}

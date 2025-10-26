@@ -5,19 +5,10 @@ import { useDialog } from "@/components/dialogs/use-dialog/useDialog";
 
 const openDialog = useDialog();
 
-let isDialogOpening = false;
-
 const openEditSettingsDialog = async () => {
-  console.log("Opening Edit Settings Dialog");
-  if (isDialogOpening) return;
-
-  isDialogOpening = true;
-
   await openDialog({
     component: EditSettingsDialog,
   });
-
-  isDialogOpening = false;
 };
 
 </script>

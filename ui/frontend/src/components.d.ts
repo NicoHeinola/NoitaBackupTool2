@@ -12,8 +12,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    BackupsTable: typeof import('./components/blocks/backups-table/BackupsTable.vue')['default']
+    ConfirmDialog: typeof import('./components/dialogs/use-dialog/confirm/ConfirmDialog.vue')['default']
+    DialogProvider: typeof import('./components/dialogs/use-dialog/DialogProvider.vue')['default']
+    FloatingButton: typeof import('./components/blocks/floating-button/FloatingButton.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SnackbarProvider: typeof import('./components/blocks/snackbar/SnackbarProvider.vue')['default']
   }
 }

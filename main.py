@@ -36,6 +36,14 @@ def start_app():
     )
 
 
+def apply_settings_changes():
+    """Apply settings changes to the NoitaBackupHelper instance"""
+
+    noita_backup_helper.noita_saves_dir_path = SettingHelper.get_setting("noita_saves_dir_path")
+    noita_backup_helper.backups_dir_path = SettingHelper.get_setting("backup_dir_path")
+    noita_backup_helper.backups_filename = SettingHelper.get_setting("backup_filename")
+
+
 def expose_bridge_functions():
     """Expose bridge functions to the frontend through Eel"""
 
@@ -62,10 +70,19 @@ def expose_bridge_functions():
         return bridge.get_setting(key, default_value)
 
     def save_setting(key, value):
-        return bridge.save_setting(key, value)
+        result = bridge.save_setting(key, value)
+
+        apply_settings_changes()
+
+        return result
 
     def save_settings(settings_data):
-        return bridge.save_settings(settings_data)
+
+        results = bridge.save_settings(settings_data)
+
+        apply_settings_changes()
+
+        return results
 
     def get_all_settings():
         return bridge.get_all_settings()

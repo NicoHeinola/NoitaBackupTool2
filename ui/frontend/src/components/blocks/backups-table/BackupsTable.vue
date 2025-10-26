@@ -3,6 +3,7 @@ import { BackupService } from "@/services/backup.service";
 import { useSnackbar } from "../snackbar/useSnackbar";
 import type Backup from "@/models/backup.model";
 import { errorSnackbar } from "@/utils/errorSnackbar";
+import { headers } from "./headers";
 
 const backups = ref<Backup[]>([
   {
@@ -41,5 +42,12 @@ const getBackups = async () => {
 
 <template>
   Backups: {{ backups }}
-  <v-data-table></v-data-table>
+  <v-data-table :headers="headers" :items="backups">
+    <template #item.actions>
+      <div class="d-flex ga-2 justify-end">
+        <v-btn size="x-small" icon="mdi-pencil"></v-btn>
+        <v-btn size="x-small" color="error" icon="mdi-delete"></v-btn>
+      </div>
+    </template>
+  </v-data-table>
 </template>

@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <dialog-provider>
-      <snackbar-provider>
+    <snackbar-provider>
+      <dialog-provider>
         <router-view />
-      </snackbar-provider>
-    </dialog-provider>
+      </dialog-provider>
+    </snackbar-provider>
   </v-app>
 </template>
 

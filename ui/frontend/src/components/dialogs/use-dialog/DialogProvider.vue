@@ -1,31 +1,69 @@
 <script setup lang="ts">
 import { ref, provide, markRaw } from "vue";
 
-const isOpen = ref(false);
-const dialogComponent = ref<any>(null);
-const dialogProps = ref<Record<string, any>>({});
-let resolvePromise: ((value: any) => void) | null = null;
+interface DialogItem {
+  id: string;
+  component: any;
+  props: Record<string, any>;
+  isOpen: boolean;
+  resolve: (value: any) => void;
+}
+
+const dialogs = ref<DialogItem[]>([]);
+let dialogIdCounter = 0;
 
 const openDialog = ({ component, props }: any) => {
-  dialogComponent.value = markRaw(component); // markRaw to avoid making component reactive
-  dialogProps.value = props || {};
-  isOpen.value = true;
+  const id = `dialog-${++dialogIdCounter}`;
 
   return new Promise((resolve) => {
-    resolvePromise = resolve;
+    const dialogItem: DialogItem = {
+      id,
+      component: markRaw(component), // markRaw to avoid making component reactive
+      props: props || {},
+      isOpen: true,
+      resolve
+    };
+
+    dialogs.value.push(dialogItem);
   });
 };
 
-const handleClose = () => {
-  isOpen.value = false;
-  if (resolvePromise) resolvePromise(null);
-  resolvePromise = null;
+const handleClose = (id: string) => {
+  const index = dialogs.value.findIndex(d => d.id === id);
+  if (index !== -1) {
+    const dialog = dialogs.value[index];
+    if (dialog) {
+      // Set isOpen to false first to prevent re-triggering
+      dialog.isOpen = false;
+      dialog.resolve(null);
+      // Remove after a short delay to allow animation
+      setTimeout(() => {
+        const currentIndex = dialogs.value.findIndex(d => d.id === id);
+        if (currentIndex !== -1) {
+          dialogs.value.splice(currentIndex, 1);
+        }
+      }, 200);
+    }
+  }
 };
 
-const handleResolve = (payload: any) => {
-  isOpen.value = false;
-  if (resolvePromise) resolvePromise(payload);
-  resolvePromise = null;
+const handleResolve = (id: string, payload: any) => {
+  const index = dialogs.value.findIndex(d => d.id === id);
+  if (index !== -1) {
+    const dialog = dialogs.value[index];
+    if (dialog) {
+      // Set isOpen to false first to prevent re-triggering
+      dialog.isOpen = false;
+      dialog.resolve(payload);
+      // Remove after a short delay to allow animation
+      setTimeout(() => {
+        const currentIndex = dialogs.value.findIndex(d => d.id === id);
+        if (currentIndex !== -1) {
+          dialogs.value.splice(currentIndex, 1);
+        }
+      }, 200);
+    }
+  }
 };
 
 provide("openDialog", openDialog);
@@ -33,7 +71,9 @@ provide("openDialog", openDialog);
 
 <template>
   <slot></slot>
-  <v-dialog v-model="isOpen">
-    <component :is="dialogComponent" v-bind="dialogProps" @close="handleClose" @resolve="handleResolve" />
+  <v-dialog v-for="dialog in dialogs" :key="dialog.id" v-model="dialog.isOpen" :z-index="2000 + dialogs.indexOf(dialog)"
+    @update:model-value="(value) => !value && handleClose(dialog.id)">
+    <component :is="dialog.component" v-bind="dialog.props" @close="() => handleClose(dialog.id)"
+      @resolve="(payload: any) => handleResolve(dialog.id, payload)" />
   </v-dialog>
 </template>

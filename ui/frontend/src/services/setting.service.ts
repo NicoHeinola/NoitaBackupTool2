@@ -1,4 +1,4 @@
-export const SettingsService = {
+export const SettingService = {
   getAllSettings: async (): Promise<Record<string, any>> => {
     return (window as any).eel.get_all_settings()?.();
   },

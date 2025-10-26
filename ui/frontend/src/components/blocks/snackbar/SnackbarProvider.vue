@@ -1,22 +1,56 @@
 <script setup lang="ts">
-import { ref, provide } from "vue";
+import { ref, provide, nextTick } from "vue";
 
-const isOpen = ref(false);
-const snackbarProps = ref<Record<string, any>>({});
-let resolvePromise: ((value: any) => void) | null = null;
+interface SnackbarItem {
+  id: string;
+  props: Record<string, any>;
+  isOpen: boolean;
+  resolve: (value: any) => void;
+}
+
+const snackbars = ref<SnackbarItem[]>([]);
+let snackbarIdCounter = 0;
 
 const openSnackbar = ({ props }: any) => {
-  snackbarProps.value = props || {};
-  isOpen.value = true;
+  const id = `snackbar-${++snackbarIdCounter}`;
 
   return new Promise((resolve) => {
-    resolvePromise = resolve;
+    const snackbarItem: SnackbarItem = {
+      id,
+      props: props || {},
+      isOpen: true,
+      resolve
+    };
+
+    snackbars.value.push(snackbarItem);
+
+    // Auto-remove after timeout
+    const timeout = snackbarItem.props.timeout || 5000;
+    if (timeout > 0) {
+      setTimeout(() => {
+        handleClose(id);
+      }, timeout);
+    }
   });
 };
 
-const handleClose = () => {
-  if (resolvePromise) resolvePromise(null);
-  resolvePromise = null;
+const handleClose = (id: string) => {
+  const index = snackbars.value.findIndex(s => s.id === id);
+  if (index !== -1) {
+    const snackbar = snackbars.value[index];
+    if (snackbar) {
+      // Set isOpen to false first to prevent re-triggering
+      snackbar.isOpen = false;
+      snackbar.resolve(null);
+      // Remove after a short delay to allow animation
+      setTimeout(() => {
+        const currentIndex = snackbars.value.findIndex(s => s.id === id);
+        if (currentIndex !== -1) {
+          snackbars.value.splice(currentIndex, 1);
+        }
+      }, 200);
+    }
+  }
 };
 
 provide("openSnackbar", openSnackbar);
@@ -24,9 +58,12 @@ provide("openSnackbar", openSnackbar);
 
 <template>
   <slot></slot>
-  <v-snackbar color="success" v-model="isOpen" v-bind="snackbarProps" :timeout="5000" @update:model-value="handleClose">
+  <v-snackbar v-for="(snackbar, index) in snackbars" :key="snackbar.id" v-model="snackbar.isOpen"
+    v-bind="snackbar.props" :timeout="-1" :style="{ 'margin-bottom': `${index * 70}px` }">
     <template #actions>
-      <v-btn color="white" text @click="isOpen = false">OK</v-btn>
+      <v-btn :color="snackbar.props.actionColor || 'white'" text @click="handleClose(snackbar.id)">
+        {{ snackbar.props.actionText || 'OK' }}
+      </v-btn>
     </template>
   </v-snackbar>
 </template>

@@ -1,4 +1,26 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import EditSettingsDialog from "@/components/dialogs/edit-settings-dialog/EditSettingsDialog.vue";
+import { useDialog } from "@/components/dialogs/use-dialog/useDialog";
+
+
+const openDialog = useDialog();
+
+let isDialogOpening = false;
+
+const openEditSettingsDialog = async () => {
+  console.log("Opening Edit Settings Dialog");
+  if (isDialogOpening) return;
+
+  isDialogOpening = true;
+
+  await openDialog({
+    component: EditSettingsDialog,
+  });
+
+  isDialogOpening = false;
+};
+
+</script>
 
 <template>
   <v-container class="w-100 h-100">
@@ -14,5 +36,5 @@
       </v-col>
     </v-row>
   </v-container>
-  <floating-button color="secondary" icon="mdi-cog" />
+  <floating-button @click="() => openEditSettingsDialog()" color="secondary" icon="mdi-cog" />
 </template>

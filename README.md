@@ -39,7 +39,7 @@ cp .env.example .env
 python3 main.py
 ```
 
-## Build (Windows .exe — Unix shell)
+## Build
 
 Create a folder-based Windows build using PyInstaller (Unix shell only):
 
@@ -57,4 +57,14 @@ pyinstaller --onedir --windowed --name NoitaBackupTool2 \
   --add-data ".env:." \
   --add-data "ui/frontend/dist:ui/frontend/dist" \
   main.py
+
+# --- Bash version below
+
+pyinstaller --onedir --windowed --name NoitaBackupTool2 ^
+  --icon assets\icon.ico ^
+  --add-data ".env;." ^
+  --add-data "ui/frontend/dist;ui/frontend/dist" ^
+  main.py
 ```
+
+PowerShell tip: use the backtick (`) for line continuation if you prefer PowerShell.

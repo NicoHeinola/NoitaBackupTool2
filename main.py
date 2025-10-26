@@ -97,10 +97,6 @@ if __name__ == "__main__":
     backup_dir_path: str = SettingHelper.get_setting("backup_dir_path")
     backup_filename: str = SettingHelper.get_setting("backup_filename")
 
-    print("Noita Saves Dir Path:", noita_saves_dir_path)
-    print("Backup Dir Path:", backup_dir_path)
-    print("Backup Filename:", backup_filename)
-
     noita_backup_helper: NoitaBackupHelper = NoitaBackupHelper(
         noita_saves_dir_path=noita_saves_dir_path,
         backup_dir_path=backup_dir_path,

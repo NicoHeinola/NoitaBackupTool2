@@ -158,22 +158,32 @@ defineExpose({
       <div class="d-flex ga-2 justify-end">
         <v-btn
           size="x-small"
-          icon="mdi-backup-restore"
-          :title="'Load ' + item.name"
-          :loading="loadingBackup"
-          @click="handleLoadBackupWithLoadingState(item)"
-        ></v-btn>
-        <v-btn
-          size="x-small"
           icon="mdi-pencil"
           @click="handleEditBackup(item)"
         ></v-btn>
-        <v-btn
-          size="x-small"
-          color="error"
-          icon="mdi-delete"
-          @click="handleDeleteBackup(item)"
-        ></v-btn>
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn
+              size="x-small"
+              icon="mdi-dots-vertical"
+              v-bind="props"
+            ></v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="handleLoadBackupWithLoadingState(item)">
+              <template #prepend>
+                <v-icon>mdi-backup-restore</v-icon>
+              </template>
+              <v-list-item-title>Load Backup</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="handleDeleteBackup(item)" class="text-error">
+              <template #prepend>
+                <v-icon>mdi-delete</v-icon>
+              </template>
+              <v-list-item-title>Delete</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     </template>
   </v-data-table>

@@ -37,7 +37,7 @@ const getBackups = async () => {
   }
 };
 
-//onMounted(getBackups);
+onMounted(getBackups);
 </script>
 
 <template>

@@ -106,6 +106,11 @@ class NoitaBackupHelper:
     def delete_backup(self, backup_id: str) -> None:
         backups = self.get_all_backups()
 
+        # Remove from disk
+        backup_save_file_path = os.path.join(self._backups_dir_path, f"backup_{backup_id}.zip")
+        if os.path.exists(backup_save_file_path):
+            os.remove(backup_save_file_path)
+
         # Remove backup with the given ID
         backups = [backup for backup in backups if backup.id != backup_id]
 

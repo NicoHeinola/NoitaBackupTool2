@@ -17,6 +17,8 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
+const loading = ref(false);
+
 const getSettings = async () => {
   try {
     settings.value = await SettingService.getAllSettings();
@@ -33,6 +35,7 @@ const getSettings = async () => {
 };
 
 const save = async () => {
+  loading.value = true;
   try {
     await SettingService.saveSettings(settings.value);
     openSnackbar({
@@ -45,6 +48,8 @@ const save = async () => {
   } catch (error) {
     console.error("Error saving settings:", error);
     errorSnackbar(openSnackbar, "Failed to save settings.", true);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -58,10 +63,21 @@ onMounted(getSettings);
       <edit-settings-form v-model="settings" />
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn variant="outlined" color="error" @click="emit('resolve', false)">
+      <v-btn
+        variant="outlined"
+        color="error"
+        :disabled="loading"
+        @click="emit('resolve', false)"
+      >
         Cancel
       </v-btn>
-      <v-btn variant="elevated" color="success" @click="save()">OK</v-btn>
+      <v-btn
+        variant="elevated"
+        color="success"
+        :loading="loading"
+        @click="save()"
+        >OK</v-btn
+      >
     </v-card-actions>
   </v-card>
 </template>

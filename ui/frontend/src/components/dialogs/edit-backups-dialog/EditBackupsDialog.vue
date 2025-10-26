@@ -27,6 +27,8 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
+const loading = ref(false);
+
 const isEditMode = computed(() => !!props.backup?.id);
 
 const save = async () => {
@@ -36,6 +38,7 @@ const save = async () => {
     return;
   }
 
+  loading.value = true;
   try {
     await BackupService.saveBackup(backupData.value);
     openSnackbar({
@@ -56,6 +59,8 @@ const save = async () => {
         : "Failed to create backup.",
       true
     );
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -69,10 +74,20 @@ const save = async () => {
       <edit-backups-form v-model="backupData" />
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn variant="outlined" color="error" @click="emit('resolve', false)">
+      <v-btn
+        variant="outlined"
+        color="error"
+        :disabled="loading"
+        @click="emit('resolve', false)"
+      >
         Cancel
       </v-btn>
-      <v-btn variant="elevated" color="success" @click="save()">
+      <v-btn
+        variant="elevated"
+        color="success"
+        :loading="loading"
+        @click="save()"
+      >
         {{ isEditMode ? "Update" : "Create" }}
       </v-btn>
     </v-card-actions>

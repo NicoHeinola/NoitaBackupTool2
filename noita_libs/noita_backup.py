@@ -31,19 +31,31 @@ class NoitaBackup:
         return self._id
 
     @date.setter
-    def date(self, new_date: str):
-        if new_date == "":
+    def date(self, new_date: datetime.datetime | str | None):
+        if new_date == "" or new_date is None:
             self._date = None
+            return
+
+        if isinstance(new_date, datetime.datetime):
+            self._date = new_date
             return
 
         self._date = datetime.datetime.strptime(new_date, "%Y-%m-%d")
 
     @description.setter
-    def description(self, new_description: str):
+    def description(self, new_description: str | None):
+        if new_description is None:
+            self._description = ""
+            return
+
         self._description = new_description
 
     @name.setter
-    def name(self, new_name: str):
+    def name(self, new_name: str | None):
+        if new_name is None:
+            self._name = ""
+            return
+
         self._name = new_name
 
     @id.setter

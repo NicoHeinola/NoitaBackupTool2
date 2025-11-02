@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppBackground: typeof import('./components/modules/app-background/AppBackground.vue')['default']
     AppFooter: typeof import('./components/modules/app-footer/AppFooter.vue')['default']
     BackupsTable: typeof import('./components/blocks/backups-table/BackupsTable.vue')['default']
     ConfirmDialog: typeof import('./components/dialogs/use-dialog/confirm/ConfirmDialog.vue')['default']

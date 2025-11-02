@@ -40,8 +40,8 @@ const filterBackup = (backup: Backup): boolean => {
 <template>
   <v-container class="w-100 h-100">
     <v-row>
-      <v-col cols="12">
-        <h1>Backups</h1>
+      <v-col cols="12" class="d-flex justify-center align-center ga-2">
+        <h1 class="text-primary text-primary">Noita Backups</h1>
       </v-col>
       <v-col class="d-flex align-center justify-end ga-2" cols="12">
         <tooltip-icon text="This will copy and zip your current save file." />

@@ -48,7 +48,7 @@ const getBackups = async () => {
     backups.value = await BackupService.getBackups();
   } catch (error) {
     console.error("Error fetching backups:", error);
-    errorSnackbar(openSnackbar, "Failed to load backups.", true);
+    errorSnackbar(openSnackbar, error);
   }
 };
 
@@ -64,7 +64,6 @@ const handleEditBackup = async (backup?: Backup) => {
     await getBackups();
   }
 
-  // Return whether the dialog resulted in a saved backup (true) or was cancelled (false/undefined)
   return result;
 };
 
@@ -91,7 +90,7 @@ const handleDeleteBackup = async (backup: Backup) => {
     await getBackups();
   } catch (error) {
     console.error("Error deleting backup:", error);
-    errorSnackbar(openSnackbar, "Failed to delete backup.", true);
+    errorSnackbar(openSnackbar, error);
   }
 };
 
@@ -149,38 +148,27 @@ const handleLoadBackup = async (backup: Backup) => {
     });
   } catch (error) {
     console.error("Error loading backup:", error);
-    errorSnackbar(openSnackbar, "Failed to load backup.", true);
-  }
-};
-
-const handleFnWithLoading = async (
-  fn: (...data: any[]) => any,
-  ...data: any[]
-) => {
-  isLoading.value = true;
-
-  try {
-    await fn(...data);
-  } catch (error) {
-  } finally {
-    isLoading.value = false;
+    errorSnackbar(openSnackbar, error);
   }
 };
 
 const handleDuplicateBackup = async (backup: Backup) => {
-  const confirmed = await openConfirm({
+  const result = await openDialog({
+    component: EditBackupsDialog,
     props: {
+      backup,
       title: "Duplicate Backup",
-      text: `Are you sure you want to create a copy of "${backup.name}"?`,
+      saveButtonText: "Duplicate",
+      handleSave: false,
     },
   });
 
-  if (!confirmed) {
+  if (!result) {
     return;
   }
 
   try {
-    await BackupService.duplicateBackup(backup.id!);
+    await BackupService.duplicateBackup(backup.id!, result);
     openSnackbar({
       props: {
         text: "Backup duplicated successfully.",
@@ -190,7 +178,7 @@ const handleDuplicateBackup = async (backup: Backup) => {
     await getBackups();
   } catch (error) {
     console.error("Error duplicating backup:", error);
-    errorSnackbar(openSnackbar, "Failed to duplicate backup.", true);
+    errorSnackbar(openSnackbar, error);
   }
 };
 
@@ -216,8 +204,22 @@ const handleReplaceBackup = async (backup: Backup) => {
     });
     await getBackups();
   } catch (error) {
-    console.error("Error replaceing backup:", error);
-    errorSnackbar(openSnackbar, "Failed to replace backup.", true);
+    console.error("Error replacing backup:", error);
+    errorSnackbar(openSnackbar, error);
+  }
+};
+
+const handleFnWithLoading = async (
+  fn: (...data: any[]) => any,
+  ...data: any[]
+) => {
+  isLoading.value = true;
+
+  try {
+    await fn(...data);
+  } catch (error) {
+  } finally {
+    isLoading.value = false;
   }
 };
 

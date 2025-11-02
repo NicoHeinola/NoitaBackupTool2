@@ -7,9 +7,15 @@ import type Backup from "@/models/backup.model";
 const props = withDefaults(
   defineProps<{
     backup?: Backup;
+    title?: string;
+    saveButtonText?: string;
+    handleSave?: boolean;
   }>(),
   {
     backup: undefined,
+    title: undefined,
+    saveButtonText: undefined,
+    handleSave: true,
   }
 );
 
@@ -23,7 +29,7 @@ const backupData = ref<Backup>({
 });
 
 const emit = defineEmits<{
-  (e: "resolve", payload: boolean): void;
+  (e: "resolve", payload: boolean | Backup): void;
   (e: "close"): void;
 }>();
 
@@ -32,6 +38,12 @@ const loading = ref(false);
 const isEditMode = computed(() => !!props.backup?.id);
 
 const save = async () => {
+  // If saving is handled externally, just emit the data
+  if (!props.handleSave) {
+    emit("resolve", backupData.value);
+    return;
+  }
+
   loading.value = true;
   try {
     await BackupService.saveBackup(backupData.value);
@@ -46,13 +58,7 @@ const save = async () => {
     emit("resolve", true);
   } catch (error) {
     console.error("Error saving backup:", error);
-    errorSnackbar(
-      openSnackbar,
-      isEditMode.value
-        ? "Failed to update backup. Check if noita path is correct in settings."
-        : "Failed to create backup. Check if noita path is correct in settings.",
-      true
-    );
+    errorSnackbar(openSnackbar, error);
   } finally {
     loading.value = false;
   }
@@ -62,7 +68,9 @@ const save = async () => {
 <template>
   <v-card>
     <v-card-title>
-      {{ isEditMode ? "Edit Backup" : "Add Backup" }}
+      {{
+        props.title ? props.title : isEditMode ? "Edit Backup" : "Add Backup"
+      }}
     </v-card-title>
     <v-card-text>
       <edit-backups-form v-model="backupData" />
@@ -82,7 +90,7 @@ const save = async () => {
         :loading="loading"
         @click="save()"
       >
-        {{ isEditMode ? "Update" : "Create" }}
+        {{ saveButtonText ? saveButtonText : isEditMode ? "Update" : "Create" }}
       </v-btn>
     </v-card-actions>
   </v-card>

@@ -13,9 +13,14 @@ export const errorSnackbar = (
     return;
   }
 
-  const status = error?.response?.status;
+  // Parse error if it might be a stringified JSON
+  try {
+    const parsedError = JSON.parse(error.message);
+    error = parsedError;
+  } catch (parseError) {}
 
-  const details = error?.response?.data?.detail;
+  const status = error?.response?.status;
+  const details = error?.message;
 
   if (status === 401) {
     openSnackbar({
@@ -59,7 +64,11 @@ export const errorSnackbar = (
   } else {
     openSnackbar({
       props: {
-        text: "An unexpected error occurred.",
+        text:
+          "An unexpected error occurred. Details: " +
+          (details
+            ? JSON.stringify(details)
+            : "No additional details provided."),
         color: "error",
       },
     });

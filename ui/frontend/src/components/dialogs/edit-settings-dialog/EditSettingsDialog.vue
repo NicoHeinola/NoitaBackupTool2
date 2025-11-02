@@ -22,15 +22,9 @@ const loading = ref(false);
 const getSettings = async () => {
   try {
     settings.value = await SettingService.getAllSettings();
-    openSnackbar({
-      props: {
-        text: "Settings loaded successfully.",
-        color: "success",
-      },
-    });
   } catch (error) {
     console.error("Error fetching settings:", error);
-    errorSnackbar(openSnackbar, "Failed to load settings.", true);
+    errorSnackbar(openSnackbar, error);
   }
 };
 
@@ -47,7 +41,7 @@ const save = async () => {
     emit("resolve", true);
   } catch (error) {
     console.error("Error saving settings:", error);
-    errorSnackbar(openSnackbar, "Failed to save settings.", true);
+    errorSnackbar(openSnackbar, error);
   } finally {
     loading.value = false;
   }

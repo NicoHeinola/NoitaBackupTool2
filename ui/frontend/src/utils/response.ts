@@ -12,11 +12,21 @@ export const validateResponse = <T>(
 ): T => {
   if (!response.success && response.error) {
     const errorMessage = `${operationName} failed: [${response.error.type}] ${response.error.message}`;
-    throw new Error(errorMessage);
+    throw new Error(
+      JSON.stringify({
+        message: errorMessage,
+        response: { ...response, status: 500 },
+      } as any)
+    );
   }
 
   if (!response.success) {
-    throw new Error(`${operationName} failed with an unknown error`);
+    throw new Error(
+      JSON.stringify({
+        message: `${operationName} failed: Unknown error.`,
+        response: { ...response, status: 500 },
+      } as any)
+    );
   }
 
   return response.data as T;

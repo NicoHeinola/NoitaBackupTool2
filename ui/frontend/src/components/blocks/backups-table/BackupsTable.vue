@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { BackupService } from "@/services/backup.service";
 import { useSnackbar } from "../snackbar/useSnackbar";
+import { useBackupStore } from "@/stores/backup";
 import type Backup from "@/models/backup.model";
 import { errorSnackbar } from "@/utils/errorSnackbar";
 import { headers } from "./headers";
@@ -16,6 +17,8 @@ const props = withDefaults(
     filterFn: () => true,
   }
 );
+
+const backupStore = useBackupStore();
 
 const backups = ref<Backup[]>([
   {
@@ -140,6 +143,8 @@ const handleLoadBackup = async (backup: Backup) => {
     // Load the selected backup
     await BackupService.loadBackup(backup.id!);
 
+    backupStore.setLastSelectedBackupId(backup.id || null);
+
     openSnackbar({
       props: {
         text: "Backup '" + backup.name + "' loaded successfully.",
@@ -243,6 +248,10 @@ defineExpose({
     :headers="headers"
     :items="filteredBackups"
     :loading="isLoading"
+    :row-props="(item: any) => ({
+      class: item.item.id === backupStore.lastSelectedBackupId ? 'selected-row' : ``,
+      style: { cursor: 'pointer' },
+    })"
   >
     <template #item.id="{ item }">
       <span style="max-width: 50px" class="d-block text-truncate">
@@ -322,3 +331,9 @@ defineExpose({
     </template>
   </v-data-table>
 </template>
+
+<style scoped>
+:deep(.selected-row) {
+  background-color: #2195f318;
+}
+</style>

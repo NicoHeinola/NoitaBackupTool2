@@ -184,8 +184,10 @@ defineExpose({
       <div class="d-flex ga-2 justify-end">
         <v-btn
           size="x-small"
-          icon="mdi-pencil"
-          @click="handleEditBackup(item)"
+          icon="mdi-backup-restore"
+          @click="handleLoadBackupWithLoadingState(item)"
+          v-tooltip="'Play on this backup instead of current save?'"
+          :loading="loadingBackup"
         ></v-btn>
         <v-menu>
           <template #activator="{ props }">
@@ -197,14 +199,32 @@ defineExpose({
             ></v-btn>
           </template>
           <v-list>
-            <v-list-item @click="handleLoadBackupWithLoadingState(item)">
+            <v-list-item @click="handleEditBackup(item)">
               <template #prepend>
-                <v-icon>mdi-backup-restore</v-icon>
+                <v-icon>mdi-pencil</v-icon>
               </template>
               <v-list-item-title
-                v-tooltip="'Play on this backup instead of current save?'"
+                v-tooltip="'Edit the information of this backup'"
               >
-                Play on this backup
+                Edit
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="console.log('Todo: implement Duplicate')">
+              <template #prepend>
+                <v-icon>mdi-content-duplicate</v-icon>
+              </template>
+              <v-list-item-title v-tooltip="'Makes a copy of this backup.'">
+                Duplicate
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="console.log('Todo: implement Duplicate')">
+              <template #prepend>
+                <v-icon>mdi-reload</v-icon>
+              </template>
+              <v-list-item-title
+                v-tooltip="'Overwrite this backup with the current save.'"
+              >
+                Replace
               </v-list-item-title>
             </v-list-item>
             <v-list-item @click="handleDeleteBackup(item)" class="text-error">

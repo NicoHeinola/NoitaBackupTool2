@@ -8,7 +8,6 @@ const backup = defineModel<Backup>({
 
 <template>
   <v-form>
-    {{ backup.date }}
     <v-row>
       <v-col cols="12">
         <v-text-field

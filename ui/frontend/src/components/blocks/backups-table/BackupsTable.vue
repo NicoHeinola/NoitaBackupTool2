@@ -82,20 +82,22 @@ const handleDeleteBackup = async (backup: Backup) => {
     },
   });
 
-  if (confirmed) {
-    try {
-      await BackupService.deleteBackup(backup.id!);
-      openSnackbar({
-        props: {
-          text: "Backup deleted successfully.",
-          color: "success",
-        },
-      });
-      await getBackups();
-    } catch (error) {
-      console.error("Error deleting backup:", error);
-      errorSnackbar(openSnackbar, "Failed to delete backup.", true);
-    }
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await BackupService.deleteBackup(backup.id!);
+    openSnackbar({
+      props: {
+        text: "Backup deleted successfully.",
+        color: "success",
+      },
+    });
+    await getBackups();
+  } catch (error) {
+    console.error("Error deleting backup:", error);
+    errorSnackbar(openSnackbar, "Failed to delete backup.", true);
   }
 };
 
@@ -166,6 +168,60 @@ const handleLoadBackupWithLoadingState = async (backup: Backup) => {
   }
 };
 
+const handleDuplicateBackup = async (backup: Backup) => {
+  const confirmed = await openConfirm({
+    props: {
+      title: "Duplicate Backup",
+      text: `Are you sure you want to create a copy of "${backup.name}"?`,
+    },
+  });
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await BackupService.duplicateBackup(backup.id!);
+    openSnackbar({
+      props: {
+        text: "Backup duplicated successfully.",
+        color: "success",
+      },
+    });
+    await getBackups();
+  } catch (error) {
+    console.error("Error duplicating backup:", error);
+    errorSnackbar(openSnackbar, "Failed to duplicate backup.", true);
+  }
+};
+
+const handleReloadBackup = async (backup: Backup) => {
+  const confirmed = await openConfirm({
+    props: {
+      title: "Overwrite Backup",
+      text: `This will overwrite "${backup.name}" with your current save file.\nAre you sure you want to proceed?`,
+    },
+  });
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await BackupService.reloadBackup(backup.id!);
+    openSnackbar({
+      props: {
+        text: "Backup replaced with current save successfully.",
+        color: "success",
+      },
+    });
+    await getBackups();
+  } catch (error) {
+    console.error("Error reloading backup:", error);
+    errorSnackbar(openSnackbar, "Failed to replace backup.", true);
+  }
+};
+
 onMounted(getBackups);
 
 defineExpose({
@@ -209,7 +265,7 @@ defineExpose({
                 Edit
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="console.log('Todo: implement Duplicate')">
+            <v-list-item @click="handleDuplicateBackup(item)">
               <template #prepend>
                 <v-icon>mdi-content-duplicate</v-icon>
               </template>
@@ -217,7 +273,7 @@ defineExpose({
                 Duplicate
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="console.log('Todo: implement Duplicate')">
+            <v-list-item @click="handleReloadBackup(item)">
               <template #prepend>
                 <v-icon>mdi-reload</v-icon>
               </template>

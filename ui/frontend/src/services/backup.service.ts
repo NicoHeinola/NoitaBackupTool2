@@ -16,4 +16,12 @@ export const BackupService = {
   loadBackup: async (backupId: string): Promise<void> => {
     return (window as any).eel.load_backup?.(backupId)?.();
   },
+
+  duplicateBackup: async (backupId: string): Promise<Backup> => {
+    return (window as any).eel.duplicate_backup?.(backupId)?.();
+  },
+
+  reloadBackup: async (backupId: string): Promise<void> => {
+    return (window as any).eel.reload_backup?.(backupId)?.();
+  },
 };

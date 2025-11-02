@@ -60,10 +60,18 @@ def expose_bridge_functions():
     def load_backup(backup_id):
         return bridge.load_backup(noita_backup_helper, backup_id)
 
+    def duplicate_backup(backup_id, new_backup_data=None):
+        return bridge.duplicate_backup(noita_backup_helper, backup_id, new_backup_data)
+
+    def replace_backup(backup_id):
+        return bridge.replace_backup(noita_backup_helper, backup_id)
+
     eel.expose(get_backups)
     eel.expose(save_backup)
     eel.expose(delete_backup)
     eel.expose(load_backup)
+    eel.expose(duplicate_backup)
+    eel.expose(replace_backup)
 
     # Settings
     def get_setting(key, default_value=""):

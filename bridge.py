@@ -37,6 +37,31 @@ def load_backup(noita_backup_helper: NoitaBackupHelper, backup_id: str) -> None:
     noita_backup_helper.load_backup(backup_id)
 
 
+def duplicate_backup(noita_backup_helper: NoitaBackupHelper, backup_id: str, new_backup_data: dict | None = None) -> dict:
+    """Create a copy of an existing backup with a new ID.
+    
+    Args:
+        noita_backup_helper: The backup helper instance
+        backup_id: The ID of the backup to duplicate
+        new_backup_data: Optional dict with new name/description/date for the duplicated backup
+        
+    Returns:
+        The newly created backup as a serialized dict
+    """
+    new_backup = noita_backup_helper.duplicate_backup(backup_id, new_backup_data)
+    return new_backup.serialize()
+
+
+def replace_backup(noita_backup_helper: NoitaBackupHelper, backup_id: str) -> None:
+    """Replace the backup files of the given backup ID with the current Noita save.
+    
+    Args:
+        noita_backup_helper: The backup helper instance
+        backup_id: The ID of the backup to replace
+    """
+    noita_backup_helper.replace_backup(backup_id)
+
+
 def get_setting(key: str, default: Any = "") -> Any:
     """Retrieve a single setting value."""
     return SettingHelper.get_setting(key, default)

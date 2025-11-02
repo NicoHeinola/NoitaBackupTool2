@@ -49,7 +49,7 @@ export default createVuetify({
       width: "800",
     },
     VTooltip: {
-      width: "400",
+      maxWidth: "400",
       location: "bottom",
     },
   },

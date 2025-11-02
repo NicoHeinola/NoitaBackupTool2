@@ -195,11 +195,12 @@ class NoitaBackupHelper:
 
         # Create new backup record
         new_backup = NoitaBackup()
-        new_backup.id = str(uuid.uuid4())
 
         new_backup.deserialize(backup_to_duplicate.serialize())
         if new_backup_data is not None:
             new_backup.deserialize(new_backup_data)
+
+        new_backup.id = str(uuid.uuid4())
 
         # Copy the zip file
         new_backup_file_path = self.get_backup_file_path(new_backup.id)

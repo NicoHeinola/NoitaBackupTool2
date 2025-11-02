@@ -65,7 +65,7 @@ const handleDeleteBackup = async (backup: Backup) => {
   const confirmed = await openConfirm({
     props: {
       title: "Delete Backup",
-      text: `Are you sure you want to delete "${backup.name}"? This action cannot be undone.`,
+      text: `Are you sure you want to delete "${backup.name}"?`,
     },
   });
 
@@ -91,11 +91,19 @@ const handleLoadBackup = async (backup: Backup) => {
   const confirmed = await openConfirm({
     props: {
       title: "Backup current save?",
-      text: `Create a backup of the current save before loading "${backup.name}"? Click OK to add a backup first, or Cancel to skip and load immediately.`,
-      cancelText: "Load Without Backup",
-      confirmText: "Backup Current Save",
+      text: `This will DELETE your current save and replace it with the backup "${backup.name}".
+      \nDo you want to create a backup of your CURRENT SAVE first?`,
+      cancelText: "Just let me play",
+      cancelColor: "success",
+      confirmText: "Create backup first",
+      persistent: false,
     },
   });
+
+  // User closed dialog
+  if (confirmed === null) {
+    return;
+  }
 
   try {
     if (confirmed) {
@@ -111,7 +119,7 @@ const handleLoadBackup = async (backup: Backup) => {
       const proceed = await openConfirm({
         props: {
           title: "Load without backup?",
-          text: `Are you sure you want to load "${backup.name}" without creating a backup of the current save? This action cannot be undone.`,
+          text: `Just making sure – loading this backup will DELETE your current save file!`,
         },
       });
 
@@ -175,7 +183,11 @@ defineExpose({
               <template #prepend>
                 <v-icon>mdi-backup-restore</v-icon>
               </template>
-              <v-list-item-title>Load Backup</v-list-item-title>
+              <v-list-item-title
+                v-tooltip="'Play on this backup instead of current save?'"
+              >
+                Play on this backup
+              </v-list-item-title>
             </v-list-item>
             <v-list-item @click="handleDeleteBackup(item)" class="text-error">
               <template #prepend>

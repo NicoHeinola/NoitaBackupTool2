@@ -22,5 +22,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnackbarProvider: typeof import('./components/blocks/snackbar/SnackbarProvider.vue')['default']
+    TooltipIcon: typeof import('./components/blocks/tooltip-icon/TooltipIcon.vue')['default']
   }
 }

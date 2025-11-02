@@ -77,7 +77,7 @@ provide("openDialog", openDialog);
     v-model="dialog.isOpen"
     :z-index="2000 + dialogs.indexOf(dialog)"
     @update:model-value="(value) => !value && handleClose(dialog.id)"
-    persistent
+    :persistent="dialog.props.persistent ?? true"
   >
     <component
       :is="dialog.component"

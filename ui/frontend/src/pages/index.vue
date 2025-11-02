@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type BackupsTable from "@/components/blocks/backups-table/BackupsTable.vue";
+import TooltipIcon from "@/components/blocks/tooltip-icon/TooltipIcon.vue";
 import EditBackupsDialog from "@/components/dialogs/edit-backups-dialog/EditBackupsDialog.vue";
 import EditSettingsDialog from "@/components/dialogs/edit-settings-dialog/EditSettingsDialog.vue";
 import { useDialog } from "@/components/dialogs/use-dialog/useDialog";
@@ -30,8 +31,11 @@ const handleAddBackup = async () => {
       <v-col cols="12">
         <h1>Backups</h1>
       </v-col>
-      <v-col class="d-flex align-center justify-end" cols="12">
-        <v-btn prepend-icon="mdi-plus" @click="handleAddBackup">Add new</v-btn>
+      <v-col class="d-flex align-center justify-end ga-2" cols="12">
+        <tooltip-icon text="This will copy and zip your current save file." />
+        <v-btn prepend-icon="mdi-plus" @click="handleAddBackup">
+          Backup current save
+        </v-btn>
       </v-col>
       <v-col cols="12">
         <backups-table ref="backupsTableRef" />

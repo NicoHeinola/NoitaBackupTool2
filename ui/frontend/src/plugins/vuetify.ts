@@ -48,5 +48,9 @@ export default createVuetify({
     VDialog: {
       width: "800",
     },
+    VTooltip: {
+      width: "400",
+      location: "bottom",
+    },
   },
 });

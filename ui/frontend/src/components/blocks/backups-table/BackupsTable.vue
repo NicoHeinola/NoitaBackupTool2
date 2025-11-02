@@ -19,14 +19,14 @@ const props = withDefaults(
 
 const backups = ref<Backup[]>([
   {
-    id: "1",
-    name: "Backup 1",
-    description: "This is a test backup",
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    name: "Dummy Backup for testing (1)",
+    description: "This is a dummy backup used for testing purposes.",
     date: "2025-01-05",
   },
   {
-    id: "2",
-    name: "Backup 2",
+    id: "660e8400-e29b-41d4-a716-446655440111",
+    name: "Dummy Backup for testing (2). Very long name to test UI behavior with long names",
     description:
       "Mauris sem leo, tempor et ultrices nec, facilisis ut dui. Curabitur pulvinar purus nec erat ullamcorper, eget laoreet nisi lacinia. Suspendisse sit amet justo at dolor pretium bibendum. In at rutrum magna, at sollicitudin ante. Duis fermentum lacus in arcu elementum efficitur. Nullam tincidunt tristique nibh, et tempor massa posuere eget. Phasellus lobortis eget nisi suscipit lobortis. Sed a pharetra tortor. Suspendisse placerat, erat sed faucibus hendrerit, tortor nibh laoreet eros, at posuere ipsum sapien quis nibh. Sed odio lorem, maximus non maximus ac, cursus sit amet enim. Mauris quis massa mollis, porta ante ut, consectetur lorem. Nullam lobortis arcu quis justo vestibulum hendrerit. Quisque consequat odio in ornare euismod. Etiam tincidunt fermentum odio a elementum. Sed sed scelerisque nisl. ",
     date: "2025-01-06",
@@ -223,6 +223,13 @@ const handleFnWithLoading = async (
   }
 };
 
+const getShortenedText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + "...";
+};
+
 onMounted(getBackups);
 
 defineExpose({
@@ -237,6 +244,18 @@ defineExpose({
     :items="filteredBackups"
     :loading="isLoading"
   >
+    <template #item.id="{ item }">
+      <span style="max-width: 50px" class="d-block text-truncate">
+        {{ item.id }}
+        <v-tooltip activator="parent"> {{ item.id }} </v-tooltip>
+      </span>
+    </template>
+    <template #item.description="{ item }">
+      <span>
+        {{ getShortenedText(item.description || "", 150) }}
+        <v-tooltip activator="parent"> {{ item.description }} </v-tooltip>
+      </span>
+    </template>
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-btn

@@ -195,7 +195,7 @@ const handleDuplicateBackup = async (backup: Backup) => {
   }
 };
 
-const handleReloadBackup = async (backup: Backup) => {
+const handleReplaceBackup = async (backup: Backup) => {
   const confirmed = await openConfirm({
     props: {
       title: "Overwrite Backup",
@@ -208,7 +208,7 @@ const handleReloadBackup = async (backup: Backup) => {
   }
 
   try {
-    await BackupService.reloadBackup(backup.id!);
+    await BackupService.replaceBackup(backup.id!);
     openSnackbar({
       props: {
         text: "Backup replaced with current save successfully.",
@@ -217,7 +217,7 @@ const handleReloadBackup = async (backup: Backup) => {
     });
     await getBackups();
   } catch (error) {
-    console.error("Error reloading backup:", error);
+    console.error("Error replaceing backup:", error);
     errorSnackbar(openSnackbar, "Failed to replace backup.", true);
   }
 };
@@ -267,15 +267,15 @@ defineExpose({
             </v-list-item>
             <v-list-item @click="handleDuplicateBackup(item)">
               <template #prepend>
-                <v-icon>mdi-content-duplicate</v-icon>
+                <v-icon>mdi-content-copy</v-icon>
               </template>
               <v-list-item-title v-tooltip="'Makes a copy of this backup.'">
                 Duplicate
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="handleReloadBackup(item)">
+            <v-list-item @click="handleReplaceBackup(item)">
               <template #prepend>
-                <v-icon>mdi-reload</v-icon>
+                <v-icon>mdi-file-replace</v-icon>
               </template>
               <v-list-item-title
                 v-tooltip="'Overwrite this backup with the current save.'"

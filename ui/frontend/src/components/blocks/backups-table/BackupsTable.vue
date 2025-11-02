@@ -252,6 +252,8 @@ defineExpose({
       class: item.item.id === backupStore.lastSelectedBackupId ? 'selected-row' : ``,
       style: { cursor: 'pointer' },
     })"
+    :items-per-page="9"
+    :items-per-page-options="[9, 30, 50, 100, -1]"
   >
     <template #item.id="{ item }">
       <span style="max-width: 50px" class="d-block text-truncate">

@@ -16,7 +16,6 @@ const backup = defineModel<Backup>({
           label="Name"
           placeholder="Enter backup name"
           required
-          hide-details
         />
       </v-col>
       <v-col cols="12">
@@ -25,16 +24,10 @@ const backup = defineModel<Backup>({
           label="Description"
           placeholder="Enter backup description"
           rows="3"
-          hide-details
         />
       </v-col>
       <v-col cols="12">
-        <v-text-field
-          v-model="backup.date"
-          label="Date"
-          type="date"
-          hide-details
-        />
+        <v-text-field v-model="backup.date" label="Date" type="date" />
       </v-col>
     </v-row>
   </v-form>

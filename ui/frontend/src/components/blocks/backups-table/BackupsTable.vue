@@ -8,6 +8,15 @@ import { useDialog } from "@/components/dialogs/use-dialog/useDialog";
 import { useConfirm } from "@/components/dialogs/use-dialog/confirm/useConfirm";
 import EditBackupsDialog from "@/components/dialogs/edit-backups-dialog/EditBackupsDialog.vue";
 
+const props = withDefaults(
+  defineProps<{
+    filterFn?: (backup: Backup) => boolean;
+  }>(),
+  {
+    filterFn: () => true,
+  }
+);
+
 const backups = ref<Backup[]>([
   {
     id: "1",
@@ -23,6 +32,10 @@ const backups = ref<Backup[]>([
     date: "2025-01-06",
   },
 ]);
+
+const filteredBackups = computed(() =>
+  backups.value.filter((backup) => props.filterFn!(backup))
+);
 
 const openSnackbar = useSnackbar();
 const openDialog = useDialog();
@@ -161,7 +174,12 @@ defineExpose({
 </script>
 
 <template>
-  <v-data-table multi-sort :headers="headers" :items="backups">
+  <v-data-table
+    multi-sort
+    :headers="headers"
+    :items="filteredBackups"
+    :loading="loadingBackup"
+  >
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-btn

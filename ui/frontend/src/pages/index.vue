@@ -4,9 +4,12 @@ import TooltipIcon from "@/components/blocks/tooltip-icon/TooltipIcon.vue";
 import EditBackupsDialog from "@/components/dialogs/edit-backups-dialog/EditBackupsDialog.vue";
 import EditSettingsDialog from "@/components/dialogs/edit-settings-dialog/EditSettingsDialog.vue";
 import { useDialog } from "@/components/dialogs/use-dialog/useDialog";
+import type Backup from "@/models/backup.model";
 
 const openDialog = useDialog();
 const backupsTableRef = ref<InstanceType<typeof BackupsTable> | null>(null);
+
+const searchFilter = ref<string>("");
 
 const openEditSettingsDialog = async () => {
   await openDialog({
@@ -23,6 +26,15 @@ const handleAddBackup = async () => {
     await backupsTableRef.value?.getBackups();
   }
 };
+
+const filterBackup = (backup: Backup): boolean => {
+  const filter = searchFilter.value.toLowerCase();
+  return (
+    !!backup.name?.toLowerCase().includes(filter) ||
+    !!backup.description?.toLowerCase().includes(filter) ||
+    !!backup.date?.toLowerCase().includes(filter)
+  );
+};
 </script>
 
 <template>
@@ -38,7 +50,13 @@ const handleAddBackup = async () => {
         </v-btn>
       </v-col>
       <v-col cols="12">
-        <backups-table ref="backupsTableRef" />
+        <v-text-field
+          v-model="searchFilter"
+          label="Search for backups"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12">
+        <backups-table ref="backupsTableRef" :filter-fn="filterBackup" />
       </v-col>
     </v-row>
   </v-container>

@@ -37,11 +37,13 @@ export default createVuetify({
       variant: "outlined",
       color: "primary",
       density: "compact",
+      hideDetails: "auto",
     },
     VTextarea: {
       variant: "outlined",
       color: "primary",
       density: "compact",
+      hideDetails: "auto",
     },
     VDialog: {
       width: "800",

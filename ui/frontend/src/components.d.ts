@@ -21,6 +21,7 @@ declare module 'vue' {
     EditSettingsDialog: typeof import('./components/dialogs/edit-settings-dialog/EditSettingsDialog.vue')['default']
     EditSettingsForm: typeof import('./components/forms/edit-settings-form/EditSettingsForm.vue')['default']
     FloatingButton: typeof import('./components/blocks/floating-button/FloatingButton.vue')['default']
+    MagicalEffects: typeof import('./components/modules/app-background/MagicalEffects.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SnackbarProvider: typeof import('./components/blocks/snackbar/SnackbarProvider.vue')['default']

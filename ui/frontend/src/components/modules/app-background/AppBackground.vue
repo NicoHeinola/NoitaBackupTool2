@@ -30,6 +30,9 @@ onMounted(() => {
       </v-fade-transition>
       <div class="app-background-gradient"></div>
     </div>
+
+    <!-- Magical Effects Component -->
+    <MagicalEffects />
   </div>
 </template>
 

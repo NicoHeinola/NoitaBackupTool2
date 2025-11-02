@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import bridge
 from noita_libs.noita_backup_helper import NoitaBackupHelper
 from setting_libs.setting_helper import SettingHelper
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def initialize_settings():
@@ -20,7 +23,10 @@ def initialize_settings():
     for key, value in default_settings.items():
         setting: str = SettingHelper.get_setting(key)
         if setting is None or setting == "":
-            SettingHelper.save_setting(key, value)
+            result = SettingHelper.save_setting(key, value)
+            if result is None or isinstance(result, dict) and not result.get("success", True):
+                logger.warning(f"Failed to initialize setting {key}")
+    logger.info("Settings initialized successfully.")
 
 
 def start_app():
@@ -38,10 +44,21 @@ def start_app():
 
 def apply_settings_changes():
     """Apply settings changes to the NoitaBackupHelper instance"""
+    try:
+        noita_saves_dir_path_response = bridge.get_setting("noita_saves_dir_path")
+        backup_dir_path_response = bridge.get_setting("backup_dir_path")
+        backup_filename_response = bridge.get_setting("backup_filename")
 
-    noita_backup_helper.noita_saves_dir_path = SettingHelper.get_setting("noita_saves_dir_path")
-    noita_backup_helper.backups_dir_path = SettingHelper.get_setting("backup_dir_path")
-    noita_backup_helper.backups_filename = SettingHelper.get_setting("backup_filename")
+        if noita_saves_dir_path_response.get("success"):
+            noita_backup_helper.noita_saves_dir_path = noita_saves_dir_path_response.get("data")
+
+        if backup_dir_path_response.get("success"):
+            noita_backup_helper.backups_dir_path = backup_dir_path_response.get("data")
+
+        if backup_filename_response.get("success"):
+            noita_backup_helper.backups_filename = backup_filename_response.get("data")
+    except Exception as e:
+        logger.error(f"Error applying settings changes: {e}")
 
 
 def expose_bridge_functions():
@@ -80,15 +97,18 @@ def expose_bridge_functions():
     def save_setting(key, value):
         result = bridge.save_setting(key, value)
 
-        apply_settings_changes()
+        # Only apply settings changes if the save was successful
+        if result.get("success", False):
+            apply_settings_changes()
 
         return result
 
     def save_settings(settings_data):
-
         results = bridge.save_settings(settings_data)
 
-        apply_settings_changes()
+        # Only apply settings changes if the save was successful
+        if results.get("success", False):
+            apply_settings_changes()
 
         return results
 

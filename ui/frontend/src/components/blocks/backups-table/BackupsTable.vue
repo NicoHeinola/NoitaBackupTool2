@@ -41,17 +41,11 @@ const openSnackbar = useSnackbar();
 const openDialog = useDialog();
 const openConfirm = useConfirm();
 
-const loadingBackup = ref(false);
+const isLoading = ref(false);
 
 const getBackups = async () => {
   try {
     backups.value = await BackupService.getBackups();
-    openSnackbar({
-      props: {
-        text: "Backups loaded successfully.",
-        color: "success",
-      },
-    });
   } catch (error) {
     console.error("Error fetching backups:", error);
     errorSnackbar(openSnackbar, "Failed to load backups.", true);
@@ -159,12 +153,17 @@ const handleLoadBackup = async (backup: Backup) => {
   }
 };
 
-const handleLoadBackupWithLoadingState = async (backup: Backup) => {
-  loadingBackup.value = true;
+const handleFnWithLoading = async (
+  fn: (...data: any[]) => any,
+  ...data: any[]
+) => {
+  isLoading.value = true;
+
   try {
-    await handleLoadBackup(backup);
+    await fn(...data);
+  } catch (error) {
   } finally {
-    loadingBackup.value = false;
+    isLoading.value = false;
   }
 };
 
@@ -234,16 +233,16 @@ defineExpose({
     multi-sort
     :headers="headers"
     :items="filteredBackups"
-    :loading="loadingBackup"
+    :loading="isLoading"
   >
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-btn
           size="x-small"
           icon="mdi-backup-restore"
-          @click="handleLoadBackupWithLoadingState(item)"
+          @click="handleFnWithLoading(handleLoadBackup, item)"
           v-tooltip="'Play on this backup instead of current save?'"
-          :loading="loadingBackup"
+          :loading="isLoading"
         ></v-btn>
         <v-menu>
           <template #activator="{ props }">
@@ -255,7 +254,7 @@ defineExpose({
             ></v-btn>
           </template>
           <v-list>
-            <v-list-item @click="handleEditBackup(item)">
+            <v-list-item @click="handleFnWithLoading(handleEditBackup, item)">
               <template #prepend>
                 <v-icon>mdi-pencil</v-icon>
               </template>
@@ -265,7 +264,9 @@ defineExpose({
                 Edit
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="handleDuplicateBackup(item)">
+            <v-list-item
+              @click="handleFnWithLoading(handleDuplicateBackup, item)"
+            >
               <template #prepend>
                 <v-icon>mdi-content-copy</v-icon>
               </template>
@@ -273,7 +274,9 @@ defineExpose({
                 Duplicate
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="handleReplaceBackup(item)">
+            <v-list-item
+              @click="handleFnWithLoading(handleReplaceBackup, item)"
+            >
               <template #prepend>
                 <v-icon>mdi-file-replace</v-icon>
               </template>
@@ -283,7 +286,10 @@ defineExpose({
                 Replace
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="handleDeleteBackup(item)" class="text-error">
+            <v-list-item
+              @click="handleFnWithLoading(handleDeleteBackup, item)"
+              class="text-error"
+            >
               <template #prepend>
                 <v-icon>mdi-delete</v-icon>
               </template>

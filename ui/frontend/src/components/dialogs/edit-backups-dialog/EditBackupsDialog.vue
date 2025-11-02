@@ -49,8 +49,8 @@ const save = async () => {
     errorSnackbar(
       openSnackbar,
       isEditMode.value
-        ? "Failed to update backup."
-        : "Failed to create backup.",
+        ? "Failed to update backup. Check if noita path is correct in settings."
+        : "Failed to create backup. Check if noita path is correct in settings.",
       true
     );
   } finally {

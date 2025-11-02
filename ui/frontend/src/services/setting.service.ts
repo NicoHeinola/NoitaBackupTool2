@@ -1,17 +1,26 @@
+import { validateResponse } from "@/utils/response";
+
 export const SettingService = {
   getAllSettings: async (): Promise<Record<string, any>> => {
-    return (window as any).eel.get_all_settings()?.();
+    const response = await (window as any).eel.get_all_settings()?.();
+    return validateResponse<Record<string, any>>(response, "Get all settings");
   },
 
   getSetting: async (key: string, defaultValue: any = "") => {
-    return (window as any).eel.get_setting?.(key, defaultValue)?.();
+    const response = await (window as any).eel.get_setting?.(
+      key,
+      defaultValue
+    )?.();
+    return validateResponse<any>(response, "Get setting");
   },
 
   saveSetting: async (key: string, value: any) => {
-    return (window as any).eel.save_setting?.(key, value)?.();
+    const response = await (window as any).eel.save_setting?.(key, value)?.();
+    return validateResponse<void>(response, "Save setting");
   },
 
   saveSettings: async (settings: Record<string, any>) => {
-    return (window as any).eel.save_settings?.(settings)?.();
+    const response = await (window as any).eel.save_settings?.(settings)?.();
+    return validateResponse<void>(response, "Save settings");
   },
 };

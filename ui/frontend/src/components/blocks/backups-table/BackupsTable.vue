@@ -334,6 +334,6 @@ defineExpose({
 
 <style scoped>
 :deep(.selected-row) {
-  background-color: #2195f318;
+  background-color: #9b27b02a;
 }
 </style>

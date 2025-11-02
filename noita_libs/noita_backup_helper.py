@@ -24,6 +24,42 @@ class NoitaBackupHelper:
     def backups_path(self) -> str:
         return os.path.join(self._backups_dir_path, self._backups_filename)
 
+    @property
+    def noita_saves_dir_path(self) -> str:
+        return self._noita_saves_dir_path
+
+    @property
+    def backups_dir_path(self) -> str:
+        return self._backups_dir_path
+
+    @property
+    def backups_filename(self) -> str:
+        return self._backups_filename
+
+    @backups_filename.setter
+    def backups_filename(self, value: str | None) -> None:
+        if value is None:
+            value = ""
+            return
+
+        self._backups_filename = value
+
+    @backups_dir_path.setter
+    def backups_dir_path(self, value: str | None) -> None:
+        if value is None:
+            value = ""
+            return
+
+        self._backups_dir_path = value
+
+    @noita_saves_dir_path.setter
+    def noita_saves_dir_path(self, value: str | None) -> None:
+        if value is None:
+            value = ""
+            return
+
+        self._noita_saves_dir_path = value
+
     def _backup_current_save_file(self, backup_id: str) -> None:
         backup_save_file_path = os.path.join(self._backups_dir_path, f"backup_{backup_id}.zip")
 

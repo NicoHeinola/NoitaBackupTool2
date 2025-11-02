@@ -1,12 +1,16 @@
 <script lang="ts" setup>
-const images = ref(["/images/bg-1.png", "/images/bg-2.jpg"]);
+const images = ref([
+  "/images/bg-2.jpg",
+  "/images/bg-3.jpg",
+  "/images/bg-4.png",
+]);
 
 const imageIndex = ref(Math.floor(Math.random() * images.value.length));
 
 onMounted(() => {
   setInterval(() => {
     imageIndex.value = (imageIndex.value + 1) % images.value.length;
-  }, 5000);
+  }, 30000);
 });
 </script>
 

@@ -40,14 +40,14 @@ const filterBackup = (backup: Backup): boolean => {
 <template>
   <v-container class="w-100 h-100">
     <v-row>
-      <v-col cols="12" class="d-flex justify-center align-center ga-2">
-        <h1 class="text-primary text-primary">Noita Backups</h1>
+      <v-col cols="12" class="d-flex align-center ga-2">
+        <h1 class="text-primary text-primary header-1">Noita Backups</h1>
       </v-col>
       <v-col class="d-flex align-center justify-end ga-2" cols="12">
-        <tooltip-icon text="This will copy and zip your current save file." />
         <v-btn prepend-icon="mdi-plus" @click="handleAddBackup">
           Backup current save
         </v-btn>
+        <tooltip-icon text="This will copy and zip your current save file." />
       </v-col>
       <v-col cols="12">
         <v-text-field
@@ -66,3 +66,9 @@ const filterBackup = (backup: Backup): boolean => {
     icon="mdi-cog"
   />
 </template>
+
+<style lang="scss" scoped>
+.header-1 {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+</style>

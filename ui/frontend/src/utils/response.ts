@@ -1,4 +1,4 @@
-import type { ApiResponse } from "@/interfaces/api-response";
+import type { ApiResponse } from '@/interfaces/api-response';
 
 /**
  * Validates the API response and throws an error if the response indicates failure.
@@ -6,17 +6,17 @@ import type { ApiResponse } from "@/interfaces/api-response";
  * @param operationName - Name of the operation for error context
  * @throws Error if response.success is false
  */
-export const validateResponse = <T>(
+export function validateResponse<T>(
   response: ApiResponse<T>,
-  operationName: string
-): T => {
+  operationName: string,
+): T {
   if (!response.success && response.error) {
     const errorMessage = `${operationName} failed: [${response.error.type}] ${response.error.message}`;
     throw new Error(
       JSON.stringify({
         message: errorMessage,
         response: { ...response, status: 500 },
-      } as any)
+      } as any),
     );
   }
 
@@ -25,9 +25,9 @@ export const validateResponse = <T>(
       JSON.stringify({
         message: `${operationName} failed: Unknown error.`,
         response: { ...response, status: 500 },
-      } as any)
+      } as any),
     );
   }
 
   return response.data as T;
-};
+}

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type Backup from "@/models/backup.model";
+import type Backup from '@/models/backup.model';
 
 const backup = defineModel<Backup>({
   default: {},

@@ -9,21 +9,21 @@ const props = withDefaults(
     confirmColor?: string;
   }>(),
   {
-    title: "Are you sure?",
-    text: "This action cannot be undone.",
-    cancelText: "Cancel",
-    confirmText: "OK",
-    cancelColor: "error",
-    confirmColor: "success",
-  }
+    title: 'Are you sure?',
+    text: 'This action cannot be undone.',
+    cancelText: 'Cancel',
+    confirmText: 'OK',
+    cancelColor: 'error',
+    confirmColor: 'success',
+  },
 );
 
 const splitText = computed(() => {
-  return props.text?.split("\n") || [];
+  return props.text?.split('\n') || [];
 });
 
 const emit = defineEmits<{
-  (e: "resolve", payload: boolean): void;
+  (e: 'resolve', payload: boolean): void;
 }>();
 </script>
 
@@ -35,15 +35,15 @@ const emit = defineEmits<{
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
       <v-btn
-        variant="outlined"
         :color="cancelColor"
+        variant="outlined"
         @click="emit('resolve', false)"
       >
         {{ cancelText }}
       </v-btn>
       <v-btn
-        variant="elevated"
         :color="confirmColor"
+        variant="elevated"
         @click="emit('resolve', true)"
       >
         {{ confirmText }}

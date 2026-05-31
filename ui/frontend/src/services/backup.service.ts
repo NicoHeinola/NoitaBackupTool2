@@ -1,40 +1,40 @@
-import type Backup from "@/models/backup.model";
-import { validateResponse } from "@/utils/response";
+import type Backup from '@/models/backup.model';
+import { validateResponse } from '@/utils/response';
 
 export const BackupService = {
   getBackups: async (): Promise<Backup[]> => {
     const response = await (window as any).eel.get_backups()?.();
-    return validateResponse<Backup[]>(response, "Get backups");
+    return validateResponse<Backup[]>(response, 'Get backups');
   },
 
   saveBackup: async (backup: Backup): Promise<Backup> => {
     const response = await (window as any).eel.save_backup?.(backup)?.();
-    return validateResponse<Backup>(response, "Save backup");
+    return validateResponse<Backup>(response, 'Save backup');
   },
 
   deleteBackup: async (backupId: string): Promise<void> => {
     const response = await (window as any).eel.delete_backup?.(backupId)?.();
-    validateResponse<void>(response, "Delete backup");
+    validateResponse<void>(response, 'Delete backup');
   },
 
   loadBackup: async (backupId: string): Promise<void> => {
     const response = await (window as any).eel.load_backup?.(backupId)?.();
-    validateResponse<void>(response, "Load backup");
+    validateResponse<void>(response, 'Load backup');
   },
 
   duplicateBackup: async (
     backupId: string,
-    backupData?: Backup
+    backupData?: Backup,
   ): Promise<Backup> => {
     const response = await (window as any).eel.duplicate_backup?.(
       backupId,
-      backupData
+      backupData,
     )?.();
-    return validateResponse<Backup>(response, "Duplicate backup");
+    return validateResponse<Backup>(response, 'Duplicate backup');
   },
 
   replaceBackup: async (backupId: string): Promise<void> => {
     const response = await (window as any).eel.replace_backup?.(backupId)?.();
-    validateResponse<void>(response, "Replace backup");
+    validateResponse<void>(response, 'Replace backup');
   },
 };

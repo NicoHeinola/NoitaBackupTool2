@@ -1,51 +1,49 @@
 <script lang="ts" setup>
-import { useSnackbar } from "@/components/blocks/snackbar/useSnackbar";
-import { SettingService } from "@/services/setting.service";
-import { errorSnackbar } from "@/utils/errorSnackbar";
-
-const props = withDefaults(defineProps<{}>(), {});
+import { useSnackbar } from '@/components/blocks/snackbar/useSnackbar';
+import { SettingService } from '@/services/setting.service';
+import { errorSnackbar } from '@/utils/errorSnackbar';
 
 const openSnackbar = useSnackbar();
 
 const settings = ref<Record<string, any>>({
-  "example-setting-1": "Some example value 1",
-  "example-setting-2": "Other example value 2",
+  'example-setting-1': 'Some example value 1',
+  'example-setting-2': 'Other example value 2',
 });
 
 const emit = defineEmits<{
-  (e: "resolve", payload: boolean): void;
-  (e: "close"): void;
+  (e: 'resolve', payload: boolean): void;
+  (e: 'close'): void;
 }>();
 
 const loading = ref(false);
 
-const getSettings = async () => {
+async function getSettings() {
   try {
     settings.value = await SettingService.getAllSettings();
   } catch (error) {
-    console.error("Error fetching settings:", error);
+    console.error('Error fetching settings:', error);
     errorSnackbar(openSnackbar, error);
   }
-};
+}
 
-const save = async () => {
+async function save() {
   loading.value = true;
   try {
     await SettingService.saveSettings(settings.value);
     openSnackbar({
       props: {
-        text: "Settings saved successfully.",
-        color: "success",
+        text: 'Settings saved successfully.',
+        color: 'success',
       },
     });
-    emit("resolve", true);
+    emit('resolve', true);
   } catch (error) {
-    console.error("Error saving settings:", error);
+    console.error('Error saving settings:', error);
     errorSnackbar(openSnackbar, error);
   } finally {
     loading.value = false;
   }
-};
+}
 
 onMounted(getSettings);
 </script>
@@ -58,17 +56,17 @@ onMounted(getSettings);
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
       <v-btn
-        variant="outlined"
         color="error"
         :disabled="loading"
+        variant="outlined"
         @click="emit('resolve', false)"
       >
         Cancel
       </v-btn>
       <v-btn
-        variant="elevated"
         color="success"
         :loading="loading"
+        variant="elevated"
         @click="save()"
         >OK</v-btn
       >

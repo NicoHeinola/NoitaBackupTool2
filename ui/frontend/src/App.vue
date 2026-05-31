@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import AppBackground from "./components/modules/app-background/AppBackground.vue";
-import AppFooter from "./components/modules/app-footer/AppFooter.vue";
+import AppBackground from './components/modules/app-background/AppBackground.vue';
+import AppFooter from './components/modules/app-footer/AppFooter.vue';
 </script>
 
 <template>

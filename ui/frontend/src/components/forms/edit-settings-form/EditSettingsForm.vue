@@ -7,8 +7,8 @@ const settings = defineModel<Record<string, any>>({
 <template>
   <v-form>
     <v-row>
-      <v-col cols="12" v-for="(_, key) in settings" :key="key">
-        <v-text-field :label="key" v-model="settings[key]" />
+      <v-col v-for="(_, key) in settings" :key="key" cols="12">
+        <v-text-field v-model="settings[key]" :label="key" />
       </v-col>
     </v-row>
   </v-form>

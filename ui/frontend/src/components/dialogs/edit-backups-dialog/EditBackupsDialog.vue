@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useSnackbar } from "@/components/blocks/snackbar/useSnackbar";
-import { BackupService } from "@/services/backup.service";
-import { errorSnackbar } from "@/utils/errorSnackbar";
-import type Backup from "@/models/backup.model";
+import type Backup from '@/models/backup.model';
+import { useSnackbar } from '@/components/blocks/snackbar/useSnackbar';
+import { BackupService } from '@/services/backup.service';
+import { errorSnackbar } from '@/utils/errorSnackbar';
 
 const props = withDefaults(
   defineProps<{
@@ -16,31 +16,31 @@ const props = withDefaults(
     title: undefined,
     saveButtonText: undefined,
     handleSave: true,
-  }
+  },
 );
 
 const openSnackbar = useSnackbar();
 
 const backupData = ref<Backup>({
   id: props.backup?.id,
-  name: props.backup?.name || "",
-  description: props.backup?.description || "",
+  name: props.backup?.name || '',
+  description: props.backup?.description || '',
   date: props.backup?.date,
 });
 
 const emit = defineEmits<{
-  (e: "resolve", payload: boolean | Backup): void;
-  (e: "close"): void;
+  (e: 'resolve', payload: boolean | Backup): void;
+  (e: 'close'): void;
 }>();
 
 const loading = ref(false);
 
 const isEditMode = computed(() => !!props.backup?.id);
 
-const save = async () => {
+async function save() {
   // If saving is handled externally, just emit the data
   if (!props.handleSave) {
-    emit("resolve", backupData.value);
+    emit('resolve', backupData.value);
     return;
   }
 
@@ -50,26 +50,26 @@ const save = async () => {
     openSnackbar({
       props: {
         text: isEditMode.value
-          ? "Backup updated successfully."
-          : "Backup created successfully.",
-        color: "success",
+          ? 'Backup updated successfully.'
+          : 'Backup created successfully.',
+        color: 'success',
       },
     });
-    emit("resolve", true);
+    emit('resolve', true);
   } catch (error) {
-    console.error("Error saving backup:", error);
+    console.error('Error saving backup:', error);
     errorSnackbar(openSnackbar, error);
   } finally {
     loading.value = false;
   }
-};
+}
 </script>
 
 <template>
   <v-card>
     <v-card-title>
       {{
-        props.title ? props.title : isEditMode ? "Edit Backup" : "Add Backup"
+        props.title ? props.title : isEditMode ? 'Edit Backup' : 'Add Backup'
       }}
     </v-card-title>
     <v-card-text>
@@ -77,20 +77,20 @@ const save = async () => {
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
       <v-btn
-        variant="outlined"
         color="error"
         :disabled="loading"
+        variant="outlined"
         @click="emit('resolve', false)"
       >
         Cancel
       </v-btn>
       <v-btn
-        variant="elevated"
         color="success"
         :loading="loading"
+        variant="elevated"
         @click="save()"
       >
-        {{ saveButtonText ? saveButtonText : isEditMode ? "Update" : "Create" }}
+        {{ saveButtonText ? saveButtonText : isEditMode ? 'Update' : 'Create' }}
       </v-btn>
     </v-card-actions>
   </v-card>

@@ -5,8 +5,8 @@ withDefaults(
     icon?: string;
   }>(),
   {
-    icon: "mdi-information",
-  }
+    icon: 'mdi-information',
+  },
 );
 </script>
 

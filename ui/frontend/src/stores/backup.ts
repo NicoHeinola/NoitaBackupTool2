@@ -1,7 +1,7 @@
 // Utilities
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
-export const useBackupStore = defineStore("backup", {
+export const useBackupStore = defineStore('backup', {
   state: () => ({
     lastSelectedBackupId: null as string | null,
   }),

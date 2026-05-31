@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 const images = ref([
-  "/images/bg-1.jpg",
-  "/images/bg-2.jpg",
-  "/images/bg-3.jpg",
-  "/images/bg-4.png",
+  '/images/bg-1.jpg',
+  '/images/bg-2.jpg',
+  '/images/bg-3.jpg',
+  '/images/bg-4.png',
 ]);
 
 const imageIndex = ref(Math.floor(Math.random() * images.value.length));
@@ -11,7 +11,7 @@ const imageIndex = ref(Math.floor(Math.random() * images.value.length));
 onMounted(() => {
   setInterval(() => {
     imageIndex.value = (imageIndex.value + 1) % images.value.length;
-  }, 30000);
+  }, 30_000);
 });
 </script>
 
@@ -21,14 +21,14 @@ onMounted(() => {
       <v-fade-transition>
         <template v-for="(image, index) in images" :key="image">
           <v-img
-            :src="image"
+            v-if="imageIndex === index"
             class="fill-height position-absolute w-100 h-100"
             cover
-            v-if="imageIndex === index"
-          ></v-img>
+            :src="image"
+          />
         </template>
       </v-fade-transition>
-      <div class="app-background-gradient"></div>
+      <div class="app-background-gradient" />
     </div>
 
     <!-- Magical Effects Component -->

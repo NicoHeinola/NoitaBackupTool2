@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, provide, markRaw } from "vue";
+import { markRaw, provide, ref } from 'vue';
 
 interface DialogItem {
   id: string;
@@ -12,7 +12,7 @@ interface DialogItem {
 const dialogs = ref<DialogItem[]>([]);
 let dialogIdCounter = 0;
 
-const openDialog = ({ component, props }: any) => {
+function openDialog({ component, props }: any) {
   const id = `dialog-${++dialogIdCounter}`;
 
   return new Promise((resolve) => {
@@ -26,9 +26,9 @@ const openDialog = ({ component, props }: any) => {
 
     dialogs.value.push(dialogItem);
   });
-};
+}
 
-const handleClose = (id: string) => {
+function handleClose(id: string) {
   const index = dialogs.value.findIndex((d) => d.id === id);
   if (index !== -1) {
     const dialog = dialogs.value[index];
@@ -45,9 +45,9 @@ const handleClose = (id: string) => {
       }, 200);
     }
   }
-};
+}
 
-const handleResolve = (id: string, payload: any) => {
+function handleResolve(id: string, payload: any) {
   const index = dialogs.value.findIndex((d) => d.id === id);
   if (index !== -1) {
     const dialog = dialogs.value[index];
@@ -64,20 +64,20 @@ const handleResolve = (id: string, payload: any) => {
       }, 200);
     }
   }
-};
+}
 
-provide("openDialog", openDialog);
+provide('openDialog', openDialog);
 </script>
 
 <template>
-  <slot></slot>
+  <slot />
   <v-dialog
     v-for="dialog in dialogs"
     :key="dialog.id"
     v-model="dialog.isOpen"
+    :persistent="dialog.props.persistent ?? true"
     :z-index="2000 + dialogs.indexOf(dialog)"
     @update:model-value="(value) => !value && handleClose(dialog.id)"
-    :persistent="dialog.props.persistent ?? true"
   >
     <component
       :is="dialog.component"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const particleColors = ["#6366f1", "#a855f7", "#ec4899", "#0ea5e9", "#06b6d4"];
+const particleColors = ['#6366f1', '#a855f7', '#ec4899', '#0ea5e9', '#06b6d4'];
 
 // Generate magical particles
 const particles = ref<
@@ -14,7 +14,7 @@ const particles = ref<
   }>
 >([]);
 
-const generateParticles = () => {
+function generateParticles() {
   particles.value = Array.from({ length: 15 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -24,9 +24,9 @@ const generateParticles = () => {
     delay: Math.random() * 2,
     color:
       particleColors[Math.floor(Math.random() * particleColors.length)] ||
-      "#6366f1",
+      '#6366f1',
   }));
-};
+}
 
 onMounted(() => {
   generateParticles();
@@ -37,7 +37,7 @@ onMounted(() => {
   <!-- Magical Effects Layer -->
   <div class="magical-effects">
     <!-- Mystical glow -->
-    <div class="mystical-glow"></div>
+    <div class="mystical-glow" />
 
     <!-- Magical particles -->
     <div
@@ -52,18 +52,18 @@ onMounted(() => {
         '--particle-delay': particle.delay + 's',
         '--particle-color': particle.color,
       }"
-    ></div>
+    />
 
     <!-- Mystical waves -->
-    <div class="mystical-wave wave-1"></div>
-    <div class="mystical-wave wave-2"></div>
+    <div class="mystical-wave wave-1" />
+    <div class="mystical-wave wave-2" />
   </div>
 
   <!-- Floating orbs (separate to prevent animation reset) -->
   <div class="floating-orbs-container">
-    <div class="floating-orb orb-1"></div>
-    <div class="floating-orb orb-2"></div>
-    <div class="floating-orb orb-3"></div>
+    <div class="floating-orb orb-1" />
+    <div class="floating-orb orb-2" />
+    <div class="floating-orb orb-3" />
   </div>
 </template>
 
@@ -120,7 +120,8 @@ onMounted(() => {
   );
   border-radius: 50%;
   filter: blur(1px);
-  box-shadow: 0 0 var(--particle-size) var(--particle-color),
+  box-shadow:
+    0 0 var(--particle-size) var(--particle-color),
     inset 0 0 calc(var(--particle-size) / 2) rgba(255, 255, 255, 0.5);
   animation: floatUp var(--particle-duration) ease-in infinite;
   animation-delay: var(--particle-delay);

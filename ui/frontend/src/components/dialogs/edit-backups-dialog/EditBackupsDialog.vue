@@ -29,7 +29,7 @@ const backupData = ref<Backup>({
   id: props.backup?.id,
   name: props.backup?.name || '',
   description: props.backup?.description || '',
-  date: props.backup?.date,
+  date: props.backup?.date || new Date().toISOString().split('T')[0], // Default to today's date in YYYY-MM-DD format
 });
 
 const emit = defineEmits<{

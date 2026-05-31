@@ -34,18 +34,10 @@ const emit = defineEmits<{
       <p v-for="(line, index) in splitText" :key="index">{{ line }}</p>
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn
-        :color="cancelColor"
-        variant="outlined"
-        @click="emit('resolve', false)"
-      >
+      <v-btn :color="cancelColor" variant="outlined" @click="emit('resolve', false)">
         {{ cancelText }}
       </v-btn>
-      <v-btn
-        :color="confirmColor"
-        variant="elevated"
-        @click="emit('resolve', true)"
-      >
+      <v-btn :color="confirmColor" variant="elevated" @click="emit('resolve', true)">
         {{ confirmText }}
       </v-btn>
     </v-card-actions>

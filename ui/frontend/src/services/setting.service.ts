@@ -7,10 +7,7 @@ export const SettingService = {
   },
 
   getSetting: async (key: string, defaultValue: any = '') => {
-    const response = await (window as any).eel.get_setting?.(
-      key,
-      defaultValue,
-    )?.();
+    const response = await (window as any).eel.get_setting?.(key, defaultValue)?.();
     return validateResponse<any>(response, 'Get setting');
   },
 

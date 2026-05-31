@@ -22,9 +22,7 @@ function generateParticles() {
     size: Math.random() * 4 + 2,
     duration: Math.random() * 8 + 6,
     delay: Math.random() * 2,
-    color:
-      particleColors[Math.floor(Math.random() * particleColors.length)] ||
-      '#6366f1',
+    color: particleColors[Math.floor(Math.random() * particleColors.length)] || '#6366f1',
   }));
 }
 
@@ -113,11 +111,7 @@ onMounted(() => {
   position: absolute;
   width: var(--particle-size);
   height: var(--particle-size);
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.8),
-    var(--particle-color)
-  );
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), var(--particle-color));
   border-radius: 50%;
   filter: blur(1px);
   box-shadow:
@@ -170,12 +164,7 @@ onMounted(() => {
   height: 2px;
   bottom: 25%;
   left: 0;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(167, 139, 250, 0.4),
-    transparent
-  );
+  background: linear-gradient(to right, transparent, rgba(167, 139, 250, 0.4), transparent);
   animation: wavePulse 6s ease-in-out infinite;
 }
 
@@ -187,12 +176,7 @@ onMounted(() => {
 .wave-2 {
   animation-delay: 3s;
   bottom: 20%;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(168, 85, 247, 0.3),
-    transparent
-  );
+  background: linear-gradient(to right, transparent, rgba(168, 85, 247, 0.3), transparent);
 }
 
 /* Animations */

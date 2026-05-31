@@ -22,14 +22,8 @@ export const BackupService = {
     validateResponse<void>(response, 'Load backup');
   },
 
-  duplicateBackup: async (
-    backupId: string,
-    backupData?: Backup,
-  ): Promise<Backup> => {
-    const response = await (window as any).eel.duplicate_backup?.(
-      backupId,
-      backupData,
-    )?.();
+  duplicateBackup: async (backupId: string, backupData?: Backup): Promise<Backup> => {
+    const response = await (window as any).eel.duplicate_backup?.(backupId, backupData)?.();
     return validateResponse<Backup>(response, 'Duplicate backup');
   },
 

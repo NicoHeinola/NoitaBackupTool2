@@ -1,8 +1,4 @@
-export function errorSnackbar(
-  openSnackbar: (opts: any) => void,
-  error: any,
-  isCustomError = false,
-) {
+export function errorSnackbar(openSnackbar: (opts: any) => void, error: any, isCustomError = false) {
   if (isCustomError) {
     openSnackbar({
       props: {
@@ -60,9 +56,7 @@ export function errorSnackbar(
         props: {
           text:
             'Internal server error. Details: ' +
-            (details
-              ? JSON.stringify(details)
-              : 'No additional details provided.'),
+            (details ? JSON.stringify(details) : 'No additional details provided.'),
           color: 'error',
         },
       });
@@ -84,9 +78,7 @@ export function errorSnackbar(
         props: {
           text:
             'An unexpected error occurred. Details: ' +
-            (details
-              ? JSON.stringify(details)
-              : 'No additional details provided.'),
+            (details ? JSON.stringify(details) : 'No additional details provided.'),
           color: 'error',
         },
       });

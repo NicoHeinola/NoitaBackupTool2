@@ -10,20 +10,10 @@ const backup = defineModel<Backup>({
   <v-form>
     <v-row>
       <v-col cols="12">
-        <v-text-field
-          v-model="backup.name"
-          label="Name"
-          placeholder="Enter backup name"
-          required
-        />
+        <v-text-field v-model="backup.name" label="Name" placeholder="Enter backup name" required />
       </v-col>
       <v-col cols="12">
-        <v-textarea
-          v-model="backup.description"
-          label="Description"
-          placeholder="Enter backup description"
-          rows="3"
-        />
+        <v-textarea v-model="backup.description" label="Description" placeholder="Enter backup description" rows="3" />
       </v-col>
       <v-col cols="12">
         <v-text-field v-model="backup.date" label="Date" type="date" />

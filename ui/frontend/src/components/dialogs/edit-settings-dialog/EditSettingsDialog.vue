@@ -55,22 +55,8 @@ onMounted(getSettings);
       <edit-settings-form v-model="settings" />
     </v-card-text>
     <v-card-actions class="d-flex justify-end">
-      <v-btn
-        color="error"
-        :disabled="loading"
-        variant="outlined"
-        @click="emit('resolve', false)"
-      >
-        Cancel
-      </v-btn>
-      <v-btn
-        color="success"
-        :loading="loading"
-        variant="elevated"
-        @click="save()"
-      >
-        OK
-      </v-btn>
+      <v-btn color="error" :disabled="loading" variant="outlined" @click="emit('resolve', false)"> Cancel </v-btn>
+      <v-btn color="success" :loading="loading" variant="elevated" @click="save()"> OK </v-btn>
     </v-card-actions>
   </v-card>
 </template>

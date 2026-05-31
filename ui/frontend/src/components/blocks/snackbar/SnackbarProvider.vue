@@ -67,11 +67,7 @@ provide('openSnackbar', openSnackbar);
     :timeout="-1"
   >
     <template #actions>
-      <v-btn
-        :color="snackbar.props.actionColor || 'white'"
-        text
-        @click="handleClose(snackbar.id)"
-      >
+      <v-btn :color="snackbar.props.actionColor || 'white'" text @click="handleClose(snackbar.id)">
         {{ snackbar.props.actionText || 'OK' }}
       </v-btn>
     </template>

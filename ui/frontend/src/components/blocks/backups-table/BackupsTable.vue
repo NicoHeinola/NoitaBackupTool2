@@ -8,6 +8,7 @@ import { useBackupStore } from '@/stores/backup';
 import { errorSnackbar } from '@/utils/errorSnackbar';
 import { useSnackbar } from '../snackbar/useSnackbar';
 import { headers } from './headers';
+import useConfirmIfNoitaIsRunning from '@/composables/useConfirmIfNoitaIsRunning';
 
 const props = withDefaults(
   defineProps<{
@@ -36,13 +37,13 @@ const backups = ref<Backup[]>([
   },
 ]);
 
-const filteredBackups = computed(() =>
-  backups.value.filter((backup) => props.filterFn!(backup)),
-);
+const filteredBackups = computed(() => backups.value.filter((backup) => props.filterFn!(backup)));
 
 const openSnackbar = useSnackbar();
 const openDialog = useDialog();
 const openConfirm = useConfirm();
+
+const { confirmIfNoitaIsRunning } = useConfirmIfNoitaIsRunning();
 
 const isLoading = ref(false);
 
@@ -99,7 +100,7 @@ async function handleDeleteBackup(backup: Backup) {
 
 async function handleLoadBackup(backup: Backup) {
   // Ask whether user wants to backup current save first.
-  const confirmed = await openConfirm({
+  let confirmed = await openConfirm({
     props: {
       title: 'Backup current save?',
       text: `This will DELETE your current save and replace it with the backup "${backup.name}".
@@ -112,7 +113,12 @@ async function handleLoadBackup(backup: Backup) {
   });
 
   // User closed dialog
-  if (confirmed === null) {
+  if (!confirmed) {
+    return;
+  }
+
+  confirmed = await confirmIfNoitaIsRunning();
+  if (!confirmed) {
     return;
   }
 
@@ -130,7 +136,7 @@ async function handleLoadBackup(backup: Backup) {
       const proceed = await openConfirm({
         props: {
           title: 'Load without backup?',
-          text: 'Just making sure – loading this backup will DELETE your current save file!',
+          text: 'Just making sure -loading this backup will DELETE your current save file!',
         },
       });
 
@@ -188,13 +194,18 @@ async function handleDuplicateBackup(backup: Backup) {
 }
 
 async function handleReplaceBackup(backup: Backup) {
-  const confirmed = await openConfirm({
+  let confirmed = await openConfirm({
     props: {
       title: 'Overwrite Backup',
       text: `This will overwrite "${backup.name}" with your current save file.\nAre you sure you want to proceed?`,
     },
   });
 
+  if (!confirmed) {
+    return;
+  }
+
+  confirmed = await confirmIfNoitaIsRunning();
   if (!confirmed) {
     return;
   }
@@ -214,10 +225,7 @@ async function handleReplaceBackup(backup: Backup) {
   }
 }
 
-async function handleFnWithLoading(
-  fn: (...data: any[]) => any,
-  ...data: any[]
-) {
+async function handleFnWithLoading(fn: (...data: any[]) => any, ...data: any[]) {
   isLoading.value = true;
 
   try {
@@ -252,10 +260,7 @@ defineExpose({
     multi-sort
     :row-props="
       (item: any) => ({
-        class:
-          item.item.id === backupStore.lastSelectedBackupId
-            ? 'selected-row'
-            : ``,
+        class: item.item.id === backupStore.lastSelectedBackupId ? 'selected-row' : ``,
         style: { cursor: 'pointer' },
       })
     "
@@ -283,50 +288,30 @@ defineExpose({
         />
         <v-menu>
           <template #activator="{ props: activatorProps }">
-            <v-btn
-              icon="mdi-dots-vertical"
-              size="x-small"
-              variant="outlined"
-              v-bind="activatorProps"
-            />
+            <v-btn icon="mdi-dots-vertical" size="x-small" variant="outlined" v-bind="activatorProps" />
           </template>
           <v-list>
             <v-list-item @click="handleFnWithLoading(handleEditBackup, item)">
               <template #prepend>
                 <v-icon>mdi-pencil</v-icon>
               </template>
-              <v-list-item-title
-                v-tooltip="'Edit the information of this backup'"
-              >
-                Edit
-              </v-list-item-title>
+              <v-list-item-title v-tooltip="'Edit the information of this backup'"> Edit </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              @click="handleFnWithLoading(handleDuplicateBackup, item)"
-            >
+            <v-list-item @click="handleFnWithLoading(handleDuplicateBackup, item)">
               <template #prepend>
                 <v-icon>mdi-content-copy</v-icon>
               </template>
-              <v-list-item-title v-tooltip="'Makes a copy of this backup.'">
-                Duplicate
-              </v-list-item-title>
+              <v-list-item-title v-tooltip="'Makes a copy of this backup.'"> Duplicate </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              @click="handleFnWithLoading(handleReplaceBackup, item)"
-            >
+            <v-list-item @click="handleFnWithLoading(handleReplaceBackup, item)">
               <template #prepend>
                 <v-icon>mdi-file-replace</v-icon>
               </template>
-              <v-list-item-title
-                v-tooltip="'Overwrite this backup with the current save.'"
-              >
+              <v-list-item-title v-tooltip="'Overwrite this backup with the current save.'">
                 Replace
               </v-list-item-title>
             </v-list-item>
-            <v-list-item
-              class="text-error"
-              @click="handleFnWithLoading(handleDeleteBackup, item)"
-            >
+            <v-list-item class="text-error" @click="handleFnWithLoading(handleDeleteBackup, item)">
               <template #prepend>
                 <v-icon>mdi-delete</v-icon>
               </template>

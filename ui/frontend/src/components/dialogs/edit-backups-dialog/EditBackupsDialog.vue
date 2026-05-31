@@ -5,6 +5,7 @@ import { BackupService } from '@/services/backup.service';
 import { errorSnackbar } from '@/utils/errorSnackbar';
 import { useConfirm } from '../use-dialog/confirm/useConfirm';
 import { useSafetyStore } from '@/stores/safety';
+import useConfirmIfNoitaIsRunning from '@/composables/useConfirmIfNoitaIsRunning';
 
 const props = withDefaults(
   defineProps<{
@@ -22,8 +23,7 @@ const props = withDefaults(
 );
 
 const openSnackbar = useSnackbar();
-const openConfirm = useConfirm();
-const safetyStore = useSafetyStore();
+const { confirmIfNoitaIsRunning } = useConfirmIfNoitaIsRunning();
 
 const backupData = ref<Backup>({
   id: props.backup?.id,
@@ -48,20 +48,10 @@ async function save() {
     return;
   }
 
-  await safetyStore.checkIsNoitaRunning();
-
-  if (safetyStore.isNoitaRunning) {
-    const confirmed = await openConfirm({
-      props: {
-        title: 'Noita is running!',
-        text: `Are you sure you want to create a backup while Noita is running? It is recommended to close Noita before creating backups to avoid potential corruption.`,
-      },
-    });
-
-    if (!confirmed) {
-      emit('resolve', false);
-      return;
-    }
+  const confirmed = await confirmIfNoitaIsRunning();
+  if (!confirmed) {
+    emit('resolve', false);
+    return;
   }
 
   loading.value = true;

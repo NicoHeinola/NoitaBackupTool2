@@ -11,13 +11,13 @@ const backupsTableRef = ref<InstanceType<typeof BackupsTable> | null>(null);
 
 const searchFilter = ref<string>('');
 
-async function openEditSettingsDialog() {
+const openEditSettingsDialog = async () => {
   await openDialog({
     component: EditSettingsDialog,
   });
-}
+};
 
-async function handleAddBackup() {
+const handleAddBackup = async () => {
   const result = await openDialog({
     component: EditBackupsDialog,
   });
@@ -25,30 +25,31 @@ async function handleAddBackup() {
   if (result) {
     await backupsTableRef.value?.getBackups();
   }
-}
+};
 
-function filterBackup(backup: Backup): boolean {
+const filterBackup = (backup: Backup): boolean => {
   const filter = searchFilter.value.toLowerCase();
   return (
     !!backup.name?.toLowerCase().includes(filter) ||
     !!backup.description?.toLowerCase().includes(filter) ||
     !!backup.date?.toLowerCase().includes(filter)
   );
-}
+};
 </script>
 
 <template>
-  <v-container class="w-100 h-100">
+  <v-container class="w-100 h-100 my-12">
     <v-row>
-      <v-col class="d-flex align-center ga-2" cols="12">
+      <v-col class="d-flex align-center justify-space-between ga-2" cols="12">
         <h1 class="text-primary text-primary header-1">Noita Backups</h1>
+        <div class="d-flex align-center ga-2">
+          <v-btn prepend-icon="mdi-plus" @click="handleAddBackup">
+            Backup current save
+          </v-btn>
+          <tooltip-icon text="This will copy and zip your current save file." />
+        </div>
       </v-col>
-      <v-col class="d-flex align-center justify-end ga-2" cols="12">
-        <v-btn prepend-icon="mdi-plus" @click="handleAddBackup">
-          Backup current save
-        </v-btn>
-        <tooltip-icon text="This will copy and zip your current save file." />
-      </v-col>
+
       <v-col cols="12">
         <v-text-field v-model="searchFilter" label="Search for backups" />
       </v-col>

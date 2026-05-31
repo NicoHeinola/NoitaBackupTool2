@@ -155,39 +155,3 @@ def get_all_settings() -> dict:
         return _success_response(settings)
     except Exception as e:
         return _error_response(str(e), type(e).__name__)
-
-
-def status(noita_backup_helper: NoitaBackupHelper) -> dict:
-    """Return status information about save and backup paths.
-
-    Mirrors the checks expected by the frontend: existence and whether
-    directories/files are empty.
-    """
-    try:
-        noita_save_exists = noita_backup_helper.noita_save_path_exists()
-        noita_save_not_empty = noita_backup_helper.path_not_empty(noita_backup_helper.current_noita_save_dir_path)
-
-        backups_dir_exists = noita_backup_helper.backups_dir_exists()
-        backups_dir_not_empty = noita_backup_helper.path_not_empty(noita_backup_helper.backups_dir_path)
-
-        backups_file_exists = False
-        try:
-            backups_file_exists = (
-                os.path.exists(noita_backup_helper.backups_path)
-                and os.path.getsize(noita_backup_helper.backups_path) > 0
-            )
-        except Exception:
-            backups_file_exists = False
-
-        data = {
-            "noita_save_exists": noita_save_exists,
-            "noita_save_not_empty": noita_save_not_empty,
-            "backups_dir_exists": backups_dir_exists,
-            "backups_dir_not_empty": backups_dir_not_empty,
-            "backups_file_exists": backups_file_exists,
-            "is_noita_running": noita_backup_helper.is_noita_actively_running(),
-        }
-
-        return _success_response(data)
-    except Exception as e:
-        return _error_response(str(e), type(e).__name__)

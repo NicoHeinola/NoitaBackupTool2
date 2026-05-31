@@ -120,12 +120,6 @@ def expose_bridge_functions():
     eel.expose(save_settings)
     eel.expose(get_all_settings)
 
-    # Status
-    def status():
-        return bridge.status(noita_backup_helper)
-
-    eel.expose(status)
-
 
 def load_env():
     # Load .env from project root during development or from the

@@ -105,7 +105,7 @@ async function handleLoadBackup(backup: Backup) {
       text: `This will DELETE your current save and replace it with the backup "${backup.name}".
       \nDo you want to create a backup of your CURRENT SAVE first?`,
       cancelText: 'Just let me play',
-      cancelColor: 'success',
+      cancelColor: 'error',
       confirmText: 'Create backup first',
       persistent: false,
     },

@@ -68,8 +68,9 @@ onMounted(getSettings);
         :loading="loading"
         variant="elevated"
         @click="save()"
-        >OK</v-btn
       >
+        OK
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>

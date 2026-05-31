@@ -63,10 +63,44 @@ class NoitaBackupHelper:
     def get_backup_file_path(self, backup_id: str) -> str:
         return os.path.join(self._backups_dir_path, f"backup_{backup_id}.zip")
 
+    def noita_save_path_exists(self) -> bool:
+        """Return True if the current Noita save directory exists and is a directory."""
+        return os.path.isdir(self.current_noita_save_dir_path)
+
+    def backups_dir_exists(self) -> bool:
+        """Return True if the backups directory exists and is a directory."""
+        return os.path.isdir(self._backups_dir_path)
+
+    def path_not_empty(self, path: str) -> bool:
+        """Return True if the given path contains at least one file or directory.
+
+        This is safer than a single os.path.exists check because it distinguishes
+        an empty directory from a missing one.
+        """
+        try:
+            if not os.path.isdir(path):
+                return False
+
+            # Use os.scandir for efficient emptiness check
+            with os.scandir(path) as it:
+                for _ in it:
+                    return True
+            return False
+        except Exception:
+            return False
+
     def _backup_current_save_file(self, backup_id: str) -> None:
         # Make sure noita save directory exists
-        if not os.path.exists(self.current_noita_save_dir_path):
+        if not self.noita_save_path_exists():
             raise FileNotFoundError(f"Noita save directory does not exist at {self.current_noita_save_dir_path}.")
+
+        # Refuse to create a backup of an empty folder — this usually indicates
+        # a misconfigured save path and can lead to accidental loss when
+        # restoring empty backups.
+        if not self.path_not_empty(self.current_noita_save_dir_path):
+            raise ValueError(
+                f"Noita save directory at {self.current_noita_save_dir_path} appears empty; refusing to create empty backup."
+            )
 
         backup_save_file_path = self.get_backup_file_path(backup_id)
 
@@ -95,8 +129,16 @@ class NoitaBackupHelper:
         if not os.path.exists(backup_save_file_path):
             raise FileNotFoundError(f"Backup file with ID {backup_id} does not exist.")
 
+        # If the backup file exists but is empty, refuse to load it.
+        try:
+            if os.path.getsize(backup_save_file_path) == 0:
+                raise ValueError(f"Backup file for ID {backup_id} is empty and will not be loaded.")
+        except OSError:
+            # If we cannot stat the file, treat it as invalid
+            raise FileNotFoundError(f"Backup file for ID {backup_id} is inaccessible.")
+
         # Clear the current save directory
-        if os.path.exists(self.current_noita_save_dir_path):
+        if self.noita_save_path_exists():
             shutil.rmtree(self.current_noita_save_dir_path)
 
         # Create the folder
@@ -104,6 +146,10 @@ class NoitaBackupHelper:
 
         # Extract the backup zip file to the current save directory
         with zipfile.ZipFile(backup_save_file_path, "r") as zip_ref:
+            # Ensure the archive actually contains files before extracting
+            if not zip_ref.namelist():
+                raise ValueError(f"Backup archive for ID {backup_id} contains no files and will not be loaded.")
+
             zip_ref.extractall(self.current_noita_save_dir_path)
 
     def get_all_backups(self) -> list[NoitaBackup]:

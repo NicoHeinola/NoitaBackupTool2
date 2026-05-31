@@ -120,6 +120,13 @@ def expose_bridge_functions():
     eel.expose(save_settings)
     eel.expose(get_all_settings)
 
+    # Safety functions
+    def does_noita_save_path_exist():
+        return bridge.does_noita_save_path_exist(noita_backup_helper)
+
+    eel.expose(bridge.is_noita_running)
+    eel.expose(does_noita_save_path_exist)
+
 
 def load_env():
     # Load .env from project root during development or from the

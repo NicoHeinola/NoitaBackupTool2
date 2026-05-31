@@ -16,6 +16,5 @@ export default [
       '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
       'vue/padding-line-between-tags': 'off',
       'antfu/top-level-function': 'off',
-    },
   },
 ];

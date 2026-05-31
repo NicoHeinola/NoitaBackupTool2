@@ -6,10 +6,7 @@ import type { ApiResponse } from '@/interfaces/api-response';
  * @param operationName - Name of the operation for error context
  * @throws Error if response.success is false
  */
-export function validateResponse<T>(
-  response: ApiResponse<T>,
-  operationName: string,
-): T {
+export function validateResponse<T>(response: ApiResponse<T>, operationName: string): T {
   if (!response.success && response.error) {
     const errorMessage = `${operationName} failed: [${response.error.type}] ${response.error.message}`;
     throw new Error(

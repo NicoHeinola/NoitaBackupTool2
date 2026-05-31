@@ -1,4 +1,5 @@
 {
   "singleQuote": true,
-  "quoteProps": "as-needed"
+  "quoteProps": "as-needed",
+  "printWidth": 120
 }

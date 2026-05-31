@@ -210,3 +210,5 @@ __marimo__/
 
 data/
 ui/frontend/build/
+
+.vscode

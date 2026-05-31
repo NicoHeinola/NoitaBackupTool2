@@ -1,6 +1,8 @@
 """Bridge for python and frontend code to communicate"""
 
 import os
+
+import psutil
 from noita_libs.noita_backup_helper import NoitaBackupHelper
 from noita_libs.noita_backup import NoitaBackup
 from setting_libs.setting_helper import SettingHelper
@@ -155,3 +157,36 @@ def get_all_settings() -> dict:
         return _success_response(settings)
     except Exception as e:
         return _error_response(str(e), type(e).__name__)
+
+
+def is_noita_running() -> dict:
+    """Check if Noita is actively running by looking for the presence of a lock file in the save directory."""
+    noita_process_names = {
+        "noita.exe",
+        "noita.x86_64",
+        "noita.app",
+        "noita",
+    }  # Common names for Noita across platforms
+
+    for proc in psutil.process_iter(["name"]):
+        try:
+            if proc.info["name"] and proc.info["name"].lower() in noita_process_names:
+                return _success_response(True)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+
+    return _success_response(False)
+
+
+def does_noita_backup_dir_exist(noita_backup_helper: NoitaBackupHelper) -> dict:
+    """Check if the Noita backup directory exists."""
+
+    exists = noita_backup_helper.backups_dir_exists()
+    return _success_response(exists)
+
+
+def does_noita_save_path_exist(noita_backup_helper: NoitaBackupHelper) -> dict:
+    """Check if the Noita saves directory exists."""
+
+    exists = noita_backup_helper.noita_save_path_exists()
+    return _success_response(exists)

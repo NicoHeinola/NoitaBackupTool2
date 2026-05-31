@@ -4,6 +4,7 @@ import zipfile
 from noita_libs.noita_backup import NoitaBackup
 import json
 import shutil
+import psutil
 
 
 class NoitaBackupHelper:
@@ -88,6 +89,24 @@ class NoitaBackupHelper:
             return False
         except Exception:
             return False
+
+    def is_noita_actively_running(self) -> bool:
+        """Check if Noita is actively running by looking for the presence of a lock file in the save directory."""
+        noita_process_names = {
+            "noita.exe",
+            "noita.x86_64",
+            "noita.app",
+            "noita",
+        }  # Common names for Noita across platforms
+
+        for proc in psutil.process_iter(["name"]):
+            try:
+                if proc.info["name"] and proc.info["name"].lower() in noita_process_names:
+                    return True
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                continue
+
+        return False
 
     def _backup_current_save_file(self, backup_id: str) -> None:
         # Make sure noita save directory exists

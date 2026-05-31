@@ -185,6 +185,7 @@ def status(noita_backup_helper: NoitaBackupHelper) -> dict:
             "backups_dir_exists": backups_dir_exists,
             "backups_dir_not_empty": backups_dir_not_empty,
             "backups_file_exists": backups_file_exists,
+            "is_noita_running": noita_backup_helper.is_noita_actively_running(),
         }
 
         return _success_response(data)

@@ -9,9 +9,12 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint .",
-    "fix": "prettier --write .",
-    "check": "eslint ."
+    "check:lint": "eslint .",
+    "fix:lint": "eslint --fix .",
+    "fix:format": "prettier --write .",
+    "check:format": "prettier --check .",
+    "check": "run-s check:lint check:format type-check",
+    "fix": "run-s fix:lint fix:format"
   },
   "dependencies": {
     "@fontsource/roboto": "5.2.10",

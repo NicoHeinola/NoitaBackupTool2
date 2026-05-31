@@ -1,79 +1,43 @@
 <script setup lang="ts">
+import type { QueuedSnackbar } from './QueuedSnackbar';
+import type { SnackbarApi } from './SnackbarApi';
+import type { SnackbarDismissReason } from './SnackbarDismissReason';
+import type { SnackbarOptions } from './SnackbarOptions';
 import { provide, ref } from 'vue';
 
-interface SnackbarItem {
-  id: string;
-  props: Record<string, any>;
-  isOpen: boolean;
-  resolve: (value: any) => void;
-}
+import { snackbarApiKey } from './snackbarApiKey';
 
-const snackbars = ref<SnackbarItem[]>([]);
-let snackbarIdCounter = 0;
+const snackbars = ref<QueuedSnackbar[]>([]);
 
-function openSnackbar({ props }: any) {
-  const id = `snackbar-${++snackbarIdCounter}`;
-
+function openSnackbar(
+  options: SnackbarOptions,
+): Promise<SnackbarDismissReason> {
   return new Promise((resolve) => {
-    const snackbarItem: SnackbarItem = {
-      id,
-      props: props || {},
-      isOpen: true,
-      resolve,
-    };
-
-    snackbars.value.push(snackbarItem);
-
-    // Auto-remove after timeout
-    const timeout = snackbarItem.props.timeout || 5000;
-    if (timeout > 0) {
-      setTimeout(() => {
-        handleClose(id);
-      }, timeout);
-    }
+    snackbars.value.push({
+      text: options.message,
+      color: options.color ?? 'success',
+      timeout: options.timeout ?? 5000,
+      location: options.location ?? 'bottom',
+      closable: options.closable ?? true,
+      variant: 'tonal',
+      onDismiss: resolve,
+    });
   });
 }
 
-function handleClose(id: string) {
-  const index = snackbars.value.findIndex((s) => s.id === id);
-  if (index !== -1) {
-    const snackbar = snackbars.value[index];
-    if (snackbar) {
-      // Set isOpen to false first to prevent re-triggering
-      snackbar.isOpen = false;
-      snackbar.resolve(null);
-      // Remove after a short delay to allow animation
-      setTimeout(() => {
-        const currentIndex = snackbars.value.findIndex((s) => s.id === id);
-        if (currentIndex !== -1) {
-          snackbars.value.splice(currentIndex, 1);
-        }
-      }, 200);
-    }
-  }
-}
+const snackbarApi: SnackbarApi = {
+  openSnackbar,
+};
 
-provide('openSnackbar', openSnackbar);
+provide(snackbarApiKey, snackbarApi);
 </script>
 
 <template>
   <slot />
-  <v-snackbar
-    v-for="(snackbar, index) in snackbars"
-    :key="snackbar.id"
-    v-model="snackbar.isOpen"
-    v-bind="snackbar.props"
-    :style="{ 'margin-bottom': `${index * 70 + 16}px` }"
-    :timeout="-1"
-  >
-    <template #actions>
-      <v-btn
-        :color="snackbar.props.actionColor || 'white'"
-        text
-        @click="handleClose(snackbar.id)"
-      >
-        {{ snackbar.props.actionText || 'OK' }}
-      </v-btn>
+
+  <v-snackbar-queue v-model="snackbars" closable :total-visible="3">
+    <template #actions="{ props }">
+      <v-btn color="default" v-bind="props">Close</v-btn>
     </template>
-  </v-snackbar>
+  </v-snackbar-queue>
 </template>

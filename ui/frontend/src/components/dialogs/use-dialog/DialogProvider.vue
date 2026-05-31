@@ -1,89 +1,108 @@
 <script setup lang="ts">
-import { markRaw, provide, ref } from 'vue';
+import type { DialogApi } from './DialogApi';
+import type { DialogOptions } from './DialogOptions';
+import { markRaw, onUnmounted, provide, ref } from 'vue';
+import { dialogApiKey } from './dialogApiKey';
 
 interface DialogItem {
-  id: string;
+  id: number;
   component: any;
-  props: Record<string, any>;
+  props: Record<string, unknown>;
   isOpen: boolean;
-  resolve: (value: any) => void;
+  closeDelay: number;
+  isClosing: boolean;
+  resolve: (value: unknown) => void;
 }
 
 const dialogs = ref<DialogItem[]>([]);
-let dialogIdCounter = 0;
+const defaultCloseDelay = 220;
+const pendingCloseTimeouts = new Set<number>();
+let nextDialogId = 0;
 
-function openDialog({ component, props }: any) {
-  const id = `dialog-${++dialogIdCounter}`;
+function removeDialog(dialogId: number) {
+  const dialogIndex = dialogs.value.findIndex(
+    (dialog) => dialog.id === dialogId,
+  );
 
+  if (dialogIndex === -1) {
+    return;
+  }
+
+  dialogs.value.splice(dialogIndex, 1);
+}
+
+function closeDialog(dialogId: number, value?: unknown) {
+  const dialog = dialogs.value.find(
+    (activeDialog) => activeDialog.id === dialogId,
+  );
+
+  if (dialog === undefined || dialog.isClosing) {
+    return;
+  }
+
+  dialog.isClosing = true;
+  dialog.isOpen = false;
+  dialog.resolve(value);
+
+  const timeoutId = window.setTimeout(() => {
+    pendingCloseTimeouts.delete(timeoutId);
+    removeDialog(dialogId);
+  }, dialog.closeDelay);
+
+  pendingCloseTimeouts.add(timeoutId);
+}
+
+function showDialog<
+  Result = unknown,
+  Props extends Record<string, unknown> = Record<string, never>,
+>(options: DialogOptions<Props>): Promise<Result | undefined> {
   return new Promise((resolve) => {
-    const dialogItem: DialogItem = {
-      id,
-      component: markRaw(component), // markRaw to avoid making component reactive
-      props: props || {},
+    dialogs.value.push({
+      id: nextDialogId++,
+      component: markRaw(options.component),
+      props: options.props ?? {},
       isOpen: true,
-      resolve,
-    };
-
-    dialogs.value.push(dialogItem);
+      closeDelay: options.closeDelay ?? defaultCloseDelay,
+      isClosing: false,
+      resolve: (value) => {
+        resolve(value as Result | undefined);
+      },
+    });
   });
 }
 
-function handleClose(id: string) {
-  const index = dialogs.value.findIndex((d) => d.id === id);
-  if (index !== -1) {
-    const dialog = dialogs.value[index];
-    if (dialog) {
-      // Set isOpen to false first to prevent re-triggering
-      dialog.isOpen = false;
-      dialog.resolve(null);
-      // Remove after a short delay to allow animation
-      setTimeout(() => {
-        const currentIndex = dialogs.value.findIndex((d) => d.id === id);
-        if (currentIndex !== -1) {
-          dialogs.value.splice(currentIndex, 1);
-        }
-      }, 200);
-    }
-  }
-}
+const dialogApi: DialogApi = {
+  showDialog,
+};
 
-function handleResolve(id: string, payload: any) {
-  const index = dialogs.value.findIndex((d) => d.id === id);
-  if (index !== -1) {
-    const dialog = dialogs.value[index];
-    if (dialog) {
-      // Set isOpen to false first to prevent re-triggering
-      dialog.isOpen = false;
-      dialog.resolve(payload);
-      // Remove after a short delay to allow animation
-      setTimeout(() => {
-        const currentIndex = dialogs.value.findIndex((d) => d.id === id);
-        if (currentIndex !== -1) {
-          dialogs.value.splice(currentIndex, 1);
-        }
-      }, 200);
-    }
-  }
-}
+provide(dialogApiKey, dialogApi);
 
-provide('openDialog', openDialog);
+onUnmounted(() => {
+  for (const timeoutId of pendingCloseTimeouts) {
+    window.clearTimeout(timeoutId);
+  }
+
+  pendingCloseTimeouts.clear();
+  dialogs.value = [];
+});
 </script>
 
 <template>
   <slot />
+
   <v-dialog
     v-for="dialog in dialogs"
     :key="dialog.id"
     v-model="dialog.isOpen"
-    :persistent="dialog.props.persistent ?? true"
+    :persistent="(dialog.props as any).persistent ?? true"
     :z-index="2000 + dialogs.indexOf(dialog)"
-    @update:model-value="(value) => !value && handleClose(dialog.id)"
+    @update:model-value="(value) => !value && closeDialog(dialog.id)"
   >
     <component
       :is="dialog.component"
       v-bind="dialog.props"
-      @close="() => handleClose(dialog.id)"
-      @resolve="(payload: any) => handleResolve(dialog.id, payload)"
+      @close="() => closeDialog(dialog.id)"
+      @resolve="(payload: any) => closeDialog(dialog.id, payload)"
     />
   </v-dialog>
 </template>

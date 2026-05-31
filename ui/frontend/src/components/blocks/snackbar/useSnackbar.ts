@@ -1,15 +1,13 @@
+import type { SnackbarApi } from './SnackbarApi';
 import { inject } from 'vue';
+import { snackbarApiKey } from './snackbarApiKey';
 
-type SnackbarOptions = {
-  props?: Record<string, any>;
-};
+export function useSnackbar(): SnackbarApi['openSnackbar'] {
+  const snackbar = inject(snackbarApiKey, null);
 
-type OpenSnackbarFn = (options: SnackbarOptions) => Promise<any>;
-
-export function useSnackbar(): OpenSnackbarFn {
-  const openSnackbar = inject<OpenSnackbarFn>('openSnackbar');
-  if (!openSnackbar) {
+  if (snackbar === null) {
     throw new Error('SnackbarProvider is missing in the component tree.');
   }
-  return openSnackbar;
+
+  return snackbar.openSnackbar;
 }

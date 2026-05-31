@@ -31,10 +31,8 @@ async function save() {
   try {
     await SettingService.saveSettings(settings.value);
     openSnackbar({
-      props: {
-        text: 'Settings saved successfully.',
-        color: 'success',
-      },
+      message: 'Settings saved successfully.',
+      color: 'success',
     });
     emit('resolve', true);
   } catch (error) {
@@ -51,9 +49,11 @@ onMounted(getSettings);
 <template>
   <v-card>
     <v-card-title>Edit settings</v-card-title>
+
     <v-card-text>
       <edit-settings-form v-model="settings" />
     </v-card-text>
+
     <v-card-actions class="d-flex justify-end">
       <v-btn
         color="error"
@@ -63,6 +63,7 @@ onMounted(getSettings);
       >
         Cancel
       </v-btn>
+
       <v-btn
         color="success"
         :loading="loading"

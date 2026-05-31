@@ -85,10 +85,8 @@ async function handleDeleteBackup(backup: Backup) {
   try {
     await BackupService.deleteBackup(backup.id!);
     openSnackbar({
-      props: {
-        text: 'Backup deleted successfully.',
-        color: 'success',
-      },
+      message: 'Backup deleted successfully.',
+      color: 'success',
     });
     await getBackups();
   } catch (error) {
@@ -146,10 +144,8 @@ async function handleLoadBackup(backup: Backup) {
     backupStore.setLastSelectedBackupId(backup.id || null);
 
     openSnackbar({
-      props: {
-        text: "Backup '" + backup.name + "' loaded successfully.",
-        color: 'success',
-      },
+      message: "Backup '" + backup.name + "' loaded successfully.",
+      color: 'success',
     });
   } catch (error) {
     console.error('Error loading backup:', error);
@@ -175,10 +171,8 @@ async function handleDuplicateBackup(backup: Backup) {
   try {
     await BackupService.duplicateBackup(backup.id!, result);
     openSnackbar({
-      props: {
-        text: 'Backup duplicated successfully.',
-        color: 'success',
-      },
+      message: 'Backup duplicated successfully.',
+      color: 'success',
     });
     await getBackups();
   } catch (error) {
@@ -202,10 +196,8 @@ async function handleReplaceBackup(backup: Backup) {
   try {
     await BackupService.replaceBackup(backup.id!);
     openSnackbar({
-      props: {
-        text: 'Backup replaced with current save successfully.',
-        color: 'success',
-      },
+      message: 'Backup replaced with current save successfully.',
+      color: 'success',
     });
     await getBackups();
   } catch (error) {
@@ -266,12 +258,14 @@ defineExpose({
         <v-tooltip activator="parent"> {{ item.id }} </v-tooltip>
       </span>
     </template>
+
     <template #item.description="{ item }">
       <span>
         {{ getShortenedText(item.description || '', 150) }}
         <v-tooltip activator="parent"> {{ item.description }} </v-tooltip>
       </span>
     </template>
+
     <template #item.actions="{ item }">
       <div class="d-flex ga-2 justify-end">
         <v-btn
@@ -281,6 +275,7 @@ defineExpose({
           size="x-small"
           @click="handleFnWithLoading(handleLoadBackup, item)"
         />
+
         <v-menu>
           <template #activator="{ props: activatorProps }">
             <v-btn
@@ -290,39 +285,46 @@ defineExpose({
               v-bind="activatorProps"
             />
           </template>
+
           <v-list>
             <v-list-item @click="handleFnWithLoading(handleEditBackup, item)">
               <template #prepend>
                 <v-icon>mdi-pencil</v-icon>
               </template>
+
               <v-list-item-title
                 v-tooltip="'Edit the information of this backup'"
               >
                 Edit
               </v-list-item-title>
             </v-list-item>
+
             <v-list-item
               @click="handleFnWithLoading(handleDuplicateBackup, item)"
             >
               <template #prepend>
                 <v-icon>mdi-content-copy</v-icon>
               </template>
+
               <v-list-item-title v-tooltip="'Makes a copy of this backup.'">
                 Duplicate
               </v-list-item-title>
             </v-list-item>
+
             <v-list-item
               @click="handleFnWithLoading(handleReplaceBackup, item)"
             >
               <template #prepend>
                 <v-icon>mdi-file-replace</v-icon>
               </template>
+
               <v-list-item-title
                 v-tooltip="'Overwrite this backup with the current save.'"
               >
                 Replace
               </v-list-item-title>
             </v-list-item>
+
             <v-list-item
               class="text-error"
               @click="handleFnWithLoading(handleDeleteBackup, item)"
@@ -330,6 +332,7 @@ defineExpose({
               <template #prepend>
                 <v-icon>mdi-delete</v-icon>
               </template>
+
               <v-list-item-title>Delete</v-list-item-title>
             </v-list-item>
           </v-list>

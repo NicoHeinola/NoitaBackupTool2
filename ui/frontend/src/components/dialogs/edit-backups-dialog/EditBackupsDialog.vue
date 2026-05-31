@@ -48,12 +48,10 @@ async function save() {
   try {
     await BackupService.saveBackup(backupData.value);
     openSnackbar({
-      props: {
-        text: isEditMode.value
-          ? 'Backup updated successfully.'
-          : 'Backup created successfully.',
-        color: 'success',
-      },
+      message: isEditMode.value
+        ? 'Backup updated successfully.'
+        : 'Backup created successfully.',
+      color: 'success',
     });
     emit('resolve', true);
   } catch (error) {
@@ -72,9 +70,11 @@ async function save() {
         props.title ? props.title : isEditMode ? 'Edit Backup' : 'Add Backup'
       }}
     </v-card-title>
+
     <v-card-text>
       <edit-backups-form v-model="backupData" />
     </v-card-text>
+
     <v-card-actions class="d-flex justify-end">
       <v-btn
         color="error"
@@ -84,6 +84,7 @@ async function save() {
       >
         Cancel
       </v-btn>
+
       <v-btn
         color="success"
         :loading="loading"

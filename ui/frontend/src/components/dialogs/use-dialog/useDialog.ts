@@ -1,16 +1,13 @@
+import type { DialogApi } from './DialogApi';
 import { inject } from 'vue';
+import { dialogApiKey } from './dialogApiKey';
 
-type DialogOptions = {
-  component: any; // The component to be rendered in the dialog
-  props?: Record<string, any>;
-};
+export function useDialog(): DialogApi['showDialog'] {
+  const dialogApi = inject(dialogApiKey, null);
 
-type OpenDialogFn = (options: DialogOptions) => Promise<any>;
-
-export function useDialog(): OpenDialogFn {
-  const openDialog = inject<OpenDialogFn>('openDialog');
-  if (!openDialog) {
+  if (dialogApi === null) {
     throw new Error('DialogProvider is missing in the component tree.');
   }
-  return openDialog;
+
+  return dialogApi.showDialog;
 }

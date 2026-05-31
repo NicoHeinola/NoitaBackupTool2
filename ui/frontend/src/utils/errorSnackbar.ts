@@ -1,14 +1,15 @@
+import type { SnackbarDismissReason } from '@/components/blocks/snackbar/SnackbarDismissReason';
+import type { SnackbarOptions } from '@/components/blocks/snackbar/SnackbarOptions';
+
 export function errorSnackbar(
-  openSnackbar: (opts: any) => void,
+  openSnackbar: (opts: SnackbarOptions) => Promise<SnackbarDismissReason>,
   error: any,
   isCustomError = false,
 ) {
   if (isCustomError) {
     openSnackbar({
-      props: {
-        text: error,
-        color: 'error',
-      },
+      message: error,
+      color: 'error',
     });
     return;
   }
@@ -24,72 +25,40 @@ export function errorSnackbar(
   const status = error?.response?.status;
   const details = error?.message;
 
+  const fallbackMessage =
+    'An unexpected error occurred. Details: ' +
+    (details ? JSON.stringify(details) : 'No additional details provided.');
+
   switch (status) {
     case 401: {
-      openSnackbar({
-        props: {
-          text: 'Unauthorized access.',
-          color: 'error',
-        },
-      });
-
+      openSnackbar({ message: 'Unauthorized access.', color: 'error' });
       break;
     }
     case 403: {
-      openSnackbar({
-        props: {
-          text: 'Forbidden access.',
-          color: 'error',
-        },
-      });
-
+      openSnackbar({ message: 'Forbidden access.', color: 'error' });
       break;
     }
     case 404: {
-      openSnackbar({
-        props: {
-          text: 'Resource not found.',
-          color: 'error',
-        },
-      });
-
+      openSnackbar({ message: 'Resource not found.', color: 'error' });
       break;
     }
     case 500: {
       openSnackbar({
-        props: {
-          text:
-            'Internal server error. Details: ' +
-            (details
-              ? JSON.stringify(details)
-              : 'No additional details provided.'),
-          color: 'error',
-        },
+        message:
+          'Internal server error. Details: ' +
+          (details
+            ? JSON.stringify(details)
+            : 'No additional details provided.'),
+        color: 'error',
       });
-
       break;
     }
     case 422: {
-      openSnackbar({
-        props: {
-          text: 'Unprocessable entity.',
-          color: 'error',
-        },
-      });
-
+      openSnackbar({ message: 'Unprocessable entity.', color: 'error' });
       break;
     }
     default: {
-      openSnackbar({
-        props: {
-          text:
-            'An unexpected error occurred. Details: ' +
-            (details
-              ? JSON.stringify(details)
-              : 'No additional details provided.'),
-          color: 'error',
-        },
-      });
+      openSnackbar({ message: fallbackMessage, color: 'error' });
     }
   }
 

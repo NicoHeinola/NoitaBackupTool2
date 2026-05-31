@@ -14,7 +14,9 @@ const useConfirmIfNoitaIsRunning = () => {
           title: 'Noita is running!',
           text: `Noita is currently running. It is recommended to close Noita before performing this action to avoid potential corruption.\nDo you want to proceed anyway?`,
           cancelText: 'Cancel',
+          cancelColor: 'success',
           confirmText: 'Proceed',
+          confirmColor: 'error',
           persistent: false,
         },
       });

@@ -113,7 +113,7 @@ async function handleLoadBackup(backup: Backup) {
   });
 
   // User closed dialog
-  if (!confirmed) {
+  if (confirmed === null) {
     return;
   }
 

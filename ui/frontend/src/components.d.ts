@@ -20,6 +20,7 @@ declare module 'vue' {
     EditBackupsForm: typeof import('./components/forms/edit-backups-form/EditBackupsForm.vue')['default']
     EditSettingsDialog: typeof import('./components/dialogs/edit-settings-dialog/EditSettingsDialog.vue')['default']
     EditSettingsForm: typeof import('./components/forms/edit-settings-form/EditSettingsForm.vue')['default']
+    ExpandableText: typeof import('./components/blocks/expandable-text/ExpandableText.vue')['default']
     FloatingButton: typeof import('./components/blocks/floating-button/FloatingButton.vue')['default']
     MagicalEffects: typeof import('./components/modules/app-background/MagicalEffects.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

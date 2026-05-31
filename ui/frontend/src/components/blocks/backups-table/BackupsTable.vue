@@ -9,6 +9,7 @@ import { errorSnackbar } from '@/utils/errorSnackbar';
 import { useSnackbar } from '../snackbar/useSnackbar';
 import { headers } from './headers';
 import useConfirmIfNoitaIsRunning from '@/composables/useConfirmIfNoitaIsRunning';
+import { ExpandableText } from '../expandable-text';
 
 const props = withDefaults(
   defineProps<{
@@ -37,7 +38,11 @@ const backups = ref<Backup[]>([
   },
 ]);
 
-const filteredBackups = computed(() => backups.value.filter((backup) => props.filterFn!(backup)));
+const filteredBackups = computed(() =>
+  backups.value
+    .filter((backup) => props.filterFn!(backup))
+    .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime()),
+);
 
 const openSnackbar = useSnackbar();
 const openDialog = useDialog();
@@ -251,77 +256,64 @@ defineExpose({
 </script>
 
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="filteredBackups"
-    :items-per-page="9"
-    :items-per-page-options="[9, 30, 50, 100, -1]"
-    :loading="isLoading"
-    multi-sort
-    :row-props="
-      (item: any) => ({
-        class: item.item.id === backupStore.lastSelectedBackupId ? 'selected-row' : ``,
-        style: { cursor: 'pointer' },
-      })
-    "
-  >
-    <template #item.id="{ item }">
-      <span class="d-block text-truncate" style="max-width: 50px">
-        {{ item.id }}
-        <v-tooltip activator="parent"> {{ item.id }} </v-tooltip>
-      </span>
-    </template>
-    <template #item.description="{ item }">
-      <span>
-        {{ getShortenedText(item.description || '', 150) }}
-        <v-tooltip activator="parent"> {{ item.description }} </v-tooltip>
-      </span>
-    </template>
-    <template #item.actions="{ item }">
-      <div class="d-flex ga-2 justify-end">
-        <v-btn
-          v-tooltip="'Play on this backup instead of current save?'"
-          icon="mdi-backup-restore"
-          :loading="isLoading"
-          size="x-small"
-          @click="handleFnWithLoading(handleLoadBackup, item)"
-        />
-        <v-menu>
-          <template #activator="{ props: activatorProps }">
-            <v-btn icon="mdi-dots-vertical" size="x-small" variant="outlined" v-bind="activatorProps" />
-          </template>
-          <v-list>
-            <v-list-item @click="handleFnWithLoading(handleEditBackup, item)">
-              <template #prepend>
-                <v-icon>mdi-pencil</v-icon>
-              </template>
-              <v-list-item-title v-tooltip="'Edit the information of this backup'"> Edit </v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="handleFnWithLoading(handleDuplicateBackup, item)">
-              <template #prepend>
-                <v-icon>mdi-content-copy</v-icon>
-              </template>
-              <v-list-item-title v-tooltip="'Makes a copy of this backup.'"> Duplicate </v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="handleFnWithLoading(handleReplaceBackup, item)">
-              <template #prepend>
-                <v-icon>mdi-file-replace</v-icon>
-              </template>
-              <v-list-item-title v-tooltip="'Overwrite this backup with the current save.'">
-                Replace
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item class="text-error" @click="handleFnWithLoading(handleDeleteBackup, item)">
-              <template #prepend>
-                <v-icon>mdi-delete</v-icon>
-              </template>
-              <v-list-item-title>Delete</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </div>
-    </template>
-  </v-data-table>
+  <v-row>
+    <v-col cols="4" v-for="backup in filteredBackups" :key="backup.id">
+      <v-card class="glass-panel" @click.stop="handleFnWithLoading(handleLoadBackup, backup)">
+        <v-card-title class="d-flex flex-column">
+          <p class="text-wrap font-weight-bold">{{ backup.name }}</p>
+          <p class="text-body-small text-medium-emphasis">{{ backup.date }}</p>
+        </v-card-title>
+        <v-card-text class="pt-3">
+          <expandable-text class="text-emphasis-medium" :text="backup.description"></expandable-text>
+        </v-card-text>
+
+        <v-card-actions class="d-flex justify-space-between">
+          <v-btn
+            v-tooltip="'Play on this backup instead of current save?'"
+            prepend-icon="mdi-backup-restore"
+            variant="flat"
+            :loading="isLoading"
+            @click.stop="handleFnWithLoading(handleLoadBackup, backup)"
+          >
+            Play
+          </v-btn>
+          <v-menu>
+            <template #activator="{ props: activatorProps }">
+              <v-btn prepend-icon="mdi-dots-vertical" variant="outlined" v-bind="activatorProps"> Actions </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="handleFnWithLoading(handleEditBackup, backup)">
+                <template #prepend>
+                  <v-icon>mdi-pencil</v-icon>
+                </template>
+                <v-list-item-title v-tooltip="'Edit the information of this backup'"> Edit </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="handleFnWithLoading(handleDuplicateBackup, backup)">
+                <template #prepend>
+                  <v-icon>mdi-content-copy</v-icon>
+                </template>
+                <v-list-item-title v-tooltip="'Makes a copy of this backup.'"> Duplicate </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="handleFnWithLoading(handleReplaceBackup, backup)">
+                <template #prepend>
+                  <v-icon>mdi-file-replace</v-icon>
+                </template>
+                <v-list-item-title v-tooltip="'Overwrite this backup with the current save.'">
+                  Replace
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item class="text-error" @click="handleFnWithLoading(handleDeleteBackup, backup)">
+                <template #prepend>
+                  <v-icon>mdi-delete</v-icon>
+                </template>
+                <v-list-item-title>Delete</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped>

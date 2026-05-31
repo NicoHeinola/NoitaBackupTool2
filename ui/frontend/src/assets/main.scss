@@ -3,7 +3,12 @@ h2,
 h3,
 h4,
 h5,
-h6 {
-  padding: 0;
+h6,
+p {
   margin: 0;
+}
+
+.glass-panel {
+  background: rgb(var(--v-theme-surface), 0.5);
+  backdrop-filter: blur(10px);
 }

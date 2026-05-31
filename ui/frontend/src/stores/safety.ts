@@ -7,8 +7,8 @@ import { SafetyService } from '@/services/safety.service';
  */
 export const useSafetyStore = defineStore('safety', {
   state: () => ({
-    isNoitaRunning: true,
-    doesNoitaSavePathExist: false,
+    isNoitaRunning: !true,
+    doesNoitaSavePathExist: !false,
   }),
 
   actions: {

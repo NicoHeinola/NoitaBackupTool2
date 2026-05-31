@@ -137,18 +137,18 @@ class NoitaBackupHelper:
             # If we cannot stat the file, treat it as invalid
             raise FileNotFoundError(f"Backup file for ID {backup_id} is inaccessible.")
 
-        # Clear the current save directory
-        if self.noita_save_path_exists():
-            shutil.rmtree(self.current_noita_save_dir_path)
-
-        # Create the folder
-        os.makedirs(self.current_noita_save_dir_path)
-
         # Extract the backup zip file to the current save directory
         with zipfile.ZipFile(backup_save_file_path, "r") as zip_ref:
             # Ensure the archive actually contains files before extracting
             if not zip_ref.namelist():
                 raise ValueError(f"Backup archive for ID {backup_id} contains no files and will not be loaded.")
+
+            # Clear the current save directory
+            if self.noita_save_path_exists():
+                shutil.rmtree(self.current_noita_save_dir_path)
+
+            # Create the folder
+            os.makedirs(self.current_noita_save_dir_path)
 
             zip_ref.extractall(self.current_noita_save_dir_path)
 
@@ -175,8 +175,12 @@ class NoitaBackupHelper:
         for backup in backups:
             backups_data.append(backup.serialize())
 
-        with open(self.backups_path, "w+", encoding="utf-8") as backups_file:
-            json.dump(backups_data, backups_file, indent=4)
+        temp_path = self.backups_path + ".tmp"
+
+        with open(temp_path, "w+", encoding="utf-8") as temp_file:
+            json.dump(backups_data, temp_file, indent=4)
+
+        os.replace(temp_path, self.backups_path)
 
     def save_backup(self, backup: NoitaBackup) -> None:
         backups = self.get_all_backups()

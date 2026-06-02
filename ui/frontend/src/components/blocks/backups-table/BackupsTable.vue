@@ -105,7 +105,7 @@ async function handleDeleteBackup(backup: Backup) {
 
 async function handleLoadBackup(backup: Backup) {
   // Ask whether user wants to backup current save first.
-  let confirmed = await openConfirm({
+  const confirmed = await openConfirm({
     props: {
       title: 'Backup current save?',
       text: `This will DELETE your current save and replace it with the backup "${backup.name}".
@@ -122,8 +122,8 @@ async function handleLoadBackup(backup: Backup) {
     return;
   }
 
-  confirmed = await confirmIfNoitaIsRunning();
-  if (!confirmed) {
+  const confirmedNoitaRunning = await confirmIfNoitaIsRunning();
+  if (!confirmedNoitaRunning) {
     return;
   }
 
